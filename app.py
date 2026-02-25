@@ -273,6 +273,61 @@ def parse_report_date(value: object) -> pd.Timestamp:
     return pd.to_datetime(text, errors="coerce")
 
 
+def parse_analysis_period_text(text: str) -> tuple[pd.Timestamp, pd.Timestamp]:
+    cleaned = re.sub(r"\(.*?\)", "", str(text)).strip()
+    cleaned = cleaned.replace(" to ", " - ")
+    parts = re.split(r"\s*-\s*", cleaned, maxsplit=1)
+    if len(parts) != 2:
+        return pd.NaT, pd.NaT
+
+    start = pd.to_datetime(parts[0].strip(), errors="coerce")
+    end = pd.to_datetime(parts[1].strip(), errors="coerce")
+    return start, end
+
+
+def period_years(start_date: pd.Timestamp, end_date: pd.Timestamp) -> float:
+    if pd.isna(start_date) or pd.isna(end_date):
+        return np.nan
+    days = (end_date - start_date).days
+    if days <= 0:
+        return np.nan
+    return days / 365.25
+
+
+def annualize_return(cumulative_return_pct: float, years: float) -> float:
+    if pd.isna(cumulative_return_pct) or pd.isna(years) or years <= 0:
+        return np.nan
+    growth = 1 + (cumulative_return_pct / 100.0)
+    if growth <= 0:
+        return np.nan
+    return ((growth ** (1 / years)) - 1) * 100
+
+
+def extract_report_period(
+    report: ParsedIBKRReport, profile: dict[str, str]
+) -> tuple[pd.Timestamp, pd.Timestamp]:
+    key_stats_meta = report.metadata.get("Key Statistics", [])
+    for row in key_stats_meta:
+        if len(row) >= 2 and "analysis period" in str(row[0]).lower():
+            start, end = parse_analysis_period_text(row[1])
+            if pd.notna(start) and pd.notna(end):
+                return start, end
+
+    profile_period = profile.get("AnalysisPeriod", "")
+    if profile_period:
+        start, end = parse_analysis_period_text(profile_period)
+        if pd.notna(start) and pd.notna(end):
+            return start, end
+
+    allocation = get_table(report, "Allocation by Asset Class", required_columns=["Date"])
+    if not allocation.empty:
+        parsed_dates = allocation["Date"].map(parse_report_date).dropna().sort_values()
+        if not parsed_dates.empty:
+            return parsed_dates.iloc[0], parsed_dates.iloc[-1]
+
+    return pd.NaT, pd.NaT
+
+
 def format_money(value: float, currency: str = "") -> str:
     if pd.isna(value):
         return "-"
@@ -397,10 +452,14 @@ def find_profile_info(report: ParsedIBKRReport) -> tuple[dict[str, str], pd.Seri
 
 
 def render_overview_tab(
-    report: ParsedIBKRReport, key_stats_row: pd.Series, base_currency: str
+    report: ParsedIBKRReport,
+    key_stats_row: pd.Series,
+    base_currency: str,
+    analysis_years: float,
 ) -> None:
     ending_nav = parse_number(key_stats_row.get("EndingNAV"))
     cumulative_return = parse_number(key_stats_row.get("CumulativeReturn"))
+    annualized_return = annualize_return(cumulative_return, analysis_years)
     one_month_return = parse_number(key_stats_row.get("1MonthReturn"))
     three_month_return = parse_number(key_stats_row.get("3MonthReturn"))
     mtm = parse_number(key_stats_row.get("MTM"))
@@ -409,11 +468,12 @@ def render_overview_tab(
     interest = parse_number(key_stats_row.get("Interest"))
     fees = parse_number(key_stats_row.get("Fees & Commissions"))
 
-    metric_col_1, metric_col_2, metric_col_3, metric_col_4 = st.columns(4)
+    metric_col_1, metric_col_2, metric_col_3, metric_col_4, metric_col_5 = st.columns(5)
     metric_col_1.metric("Ending NAV", format_money(ending_nav, base_currency))
     metric_col_2.metric("Cumulative Return", format_pct(cumulative_return))
-    metric_col_3.metric("1-Month Return", format_pct(one_month_return))
-    metric_col_4.metric("3-Month Return", format_pct(three_month_return))
+    metric_col_3.metric("Annualized Return", format_pct(annualized_return))
+    metric_col_4.metric("1-Month Return", format_pct(one_month_return))
+    metric_col_5.metric("3-Month Return", format_pct(three_month_return))
 
     metric_col_5, metric_col_6, metric_col_7, metric_col_8 = st.columns(4)
     metric_col_5.metric("MTM", format_money(mtm, base_currency))
@@ -583,6 +643,29 @@ def render_performance_tab(report: ParsedIBKRReport, account_hint: str) -> None:
 
     periodic_returns_long = build_benchmark_long(time_table)
     cumulative_returns_long = build_benchmark_long(cumulative_table)
+    benchmark_names = []
+    for benchmark_col in ("BM1", "BM2", "BM3"):
+        if benchmark_col in time_table.columns:
+            values = time_table[benchmark_col].replace("", np.nan).dropna()
+            if not values.empty:
+                benchmark_names.append(str(values.iloc[0]))
+
+    portfolio_series_name = ""
+    if not periodic_returns_long.empty:
+        candidate_series = [
+            series
+            for series in periodic_returns_long["Series"].unique()
+            if series not in benchmark_names
+        ]
+        portfolio_series_name = (
+            account_hint
+            if account_hint and account_hint in candidate_series
+            else (
+                candidate_series[0]
+                if candidate_series
+                else periodic_returns_long["Series"].iloc[0]
+            )
+        )
 
     performance_chart_col, drawdown_chart_col = st.columns((1.3, 1.0))
 
@@ -613,27 +696,6 @@ def render_performance_tab(report: ParsedIBKRReport, account_hint: str) -> None:
         if periodic_returns_long.empty:
             st.info("Drawdown chart requires periodic account returns.")
         else:
-            benchmark_names = []
-            for benchmark_col in ("BM1", "BM2", "BM3"):
-                if benchmark_col in time_table.columns:
-                    values = time_table[benchmark_col].replace("", np.nan).dropna()
-                    if not values.empty:
-                        benchmark_names.append(str(values.iloc[0]))
-
-            candidate_series = [
-                series
-                for series in periodic_returns_long["Series"].unique()
-                if series not in benchmark_names
-            ]
-            portfolio_series_name = (
-                account_hint
-                if account_hint and account_hint in candidate_series
-                else (
-                    candidate_series[0]
-                    if candidate_series
-                    else periodic_returns_long["Series"].iloc[0]
-                )
-            )
             portfolio_returns = periodic_returns_long.loc[
                 periodic_returns_long["Series"] == portfolio_series_name
             ].sort_values("Date")
@@ -681,19 +743,64 @@ def render_performance_tab(report: ParsedIBKRReport, account_hint: str) -> None:
             legend_title_text="Series",
         )
         st.plotly_chart(cumulative_fig, use_container_width=True)
+
+        annualized_rows: list[dict[str, float | str]] = []
+        for series_name, series_df in cumulative_returns_long.groupby("Series"):
+            series_df = series_df.sort_values("Date")
+            if series_df.empty:
+                continue
+            start_date = series_df["Date"].iloc[0]
+            end_date = series_df["Date"].iloc[-1]
+            years = period_years(start_date, end_date)
+            cumulative_return = series_df["Return"].iloc[-1]
+            annualized = annualize_return(cumulative_return, years)
+            if pd.notna(annualized):
+                annualized_rows.append(
+                    {"Series": series_name, "AnnualizedReturn": annualized}
+                )
+
+        annualized_df = pd.DataFrame(annualized_rows)
+        if not annualized_df.empty:
+            annualized_df = annualized_df.sort_values("AnnualizedReturn", ascending=False)
+        if not annualized_df.empty:
+            portfolio_annualized = annualized_df.loc[
+                annualized_df["Series"] == portfolio_series_name, "AnnualizedReturn"
+            ]
+            annualized_col_1, annualized_col_2 = st.columns((1.2, 2.0))
+            with annualized_col_1:
+                if not portfolio_annualized.empty:
+                    st.metric(
+                        "Portfolio Annualized Return",
+                        format_pct(float(portfolio_annualized.iloc[0])),
+                    )
+            with annualized_col_2:
+                annualized_fig = px.bar(
+                    annualized_df,
+                    x="Series",
+                    y="AnnualizedReturn",
+                    color="Series",
+                    template=PLOTLY_TEMPLATE,
+                    color_discrete_sequence=CHART_COLORS,
+                    title="Annualized Return vs Benchmarks",
+                    labels={"AnnualizedReturn": "Annualized return (%)", "Series": ""},
+                    text=annualized_df["AnnualizedReturn"].map(lambda value: f"{value:.2f}%"),
+                )
+                annualized_fig.update_layout(
+                    height=330,
+                    margin={"l": 12, "r": 12, "t": 48, "b": 8},
+                    showlegend=False,
+                )
+                annualized_fig.update_traces(
+                    textposition="outside",
+                    hovertemplate="%{x}<br>%{y:.2f}%<extra></extra>",
+                )
+                st.plotly_chart(annualized_fig, use_container_width=True)
     else:
         st.info("Cumulative benchmark comparison was not found.")
 
     if not periodic_returns_long.empty:
-        benchmark_names = []
-        for benchmark_col in ("BM1", "BM2", "BM3"):
-            if benchmark_col in time_table.columns:
-                values = time_table[benchmark_col].replace("", np.nan).dropna()
-                if not values.empty:
-                    benchmark_names.append(str(values.iloc[0]))
-
         portfolio_rows = periodic_returns_long.loc[
-            ~periodic_returns_long["Series"].isin(benchmark_names)
+            periodic_returns_long["Series"] == portfolio_series_name
         ].copy()
         if portfolio_rows.empty:
             portfolio_rows = periodic_returns_long.copy()
@@ -1573,6 +1680,9 @@ def streamlit_app() -> None:
     account_id = profile.get("Account", "")
     base_currency = profile.get("BaseCurrency", "")
     analysis_period = profile.get("AnalysisPeriod", "")
+    period_start, period_end = extract_report_period(report, profile)
+    analysis_years = period_years(period_start, period_end)
+    period_length_display = f"{analysis_years:.2f} years" if pd.notna(analysis_years) else "-"
 
     st.markdown(
         f"""
@@ -1581,6 +1691,7 @@ def streamlit_app() -> None:
             Account: <b>{account_name}</b> ({account_id})<br/>
             Base Currency: <b>{base_currency or "-"}</b><br/>
             Analysis Period: <b>{analysis_period or "-"}</b><br/>
+            Period Length: <b>{period_length_display}</b><br/>
             Parsed Sections: <b>{len(report.tables)}</b>
         </div>
         """,
@@ -1608,7 +1719,7 @@ def streamlit_app() -> None:
     )
 
     with overview_tab:
-        render_overview_tab(report, key_stats_row, base_currency)
+        render_overview_tab(report, key_stats_row, base_currency, analysis_years)
 
     with performance_tab:
         render_performance_tab(report, account_id)
