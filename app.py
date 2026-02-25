@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import html
 import io
 import re
 from collections import defaultdict
@@ -106,6 +107,42 @@ def inject_custom_css() -> None:
             div[data-testid="stMetricValue"] {
                 color: #f5fbff;
                 font-family: "Space Grotesk", "Segoe UI", sans-serif;
+            }
+
+            .method-tip {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.45rem;
+                font-family: "Space Grotesk", "Segoe UI", sans-serif;
+                font-size: 1rem;
+                font-weight: 700;
+                margin: 0.2rem 0 0.35rem 0;
+                color: #eff5ff;
+            }
+
+            .hint-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 1rem;
+                height: 1rem;
+                border-radius: 999px;
+                border: 1px solid rgba(160, 185, 225, 0.5);
+                color: #aec5ed;
+                font-size: 0.7rem;
+                cursor: help;
+                line-height: 1rem;
+            }
+
+            .hint-value {
+                font-family: "DM Sans", "Segoe UI", sans-serif;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #a8bce0;
+                background: rgba(95, 125, 178, 0.2);
+                border: 1px solid rgba(151, 178, 224, 0.28);
+                border-radius: 999px;
+                padding: 0.1rem 0.44rem;
             }
         </style>
         """,
@@ -328,6 +365,33 @@ def extract_report_period(
     return pd.NaT, pd.NaT
 
 
+def return_method_label_and_tooltip(performance_measure: str) -> tuple[str, str]:
+    normalized = str(performance_measure or "").strip().upper()
+    if normalized == "TWR":
+        return (
+            "TWR",
+            "IBKR PerformanceMeasure is TWR (Time-Weighted Return). "
+            "Cumulative and annualized returns here are time-weighted and chain-linked.",
+        )
+    if normalized == "MWR":
+        return (
+            "MWR",
+            "IBKR PerformanceMeasure is MWR (Money-Weighted Return). "
+            "Cumulative and annualized returns here are cash-flow weighted.",
+        )
+    if normalized:
+        return (
+            normalized,
+            f"IBKR PerformanceMeasure is reported as {normalized}. "
+            "Cumulative and annualized returns follow that method.",
+        )
+    return (
+        "Unknown",
+        "Performance method was not found in the report. "
+        "Cumulative and annualized returns are derived from the report's return series.",
+    )
+
+
 def format_money(value: float, currency: str = "") -> str:
     if pd.isna(value):
         return "-"
@@ -456,32 +520,40 @@ def render_overview_tab(
     key_stats_row: pd.Series,
     base_currency: str,
     analysis_years: float,
+    performance_measure: str,
 ) -> None:
     ending_nav = parse_number(key_stats_row.get("EndingNAV"))
     cumulative_return = parse_number(key_stats_row.get("CumulativeReturn"))
     annualized_return = annualize_return(cumulative_return, analysis_years)
-    one_month_return = parse_number(key_stats_row.get("1MonthReturn"))
-    three_month_return = parse_number(key_stats_row.get("3MonthReturn"))
     mtm = parse_number(key_stats_row.get("MTM"))
     deposits = parse_number(key_stats_row.get("Deposits & Withdrawals"))
     dividends = parse_number(key_stats_row.get("Dividends"))
     interest = parse_number(key_stats_row.get("Interest"))
     fees = parse_number(key_stats_row.get("Fees & Commissions"))
+    method_label, method_tip = return_method_label_and_tooltip(performance_measure)
 
-    metric_col_1, metric_col_2, metric_col_3, metric_col_4, metric_col_5 = st.columns(5)
+    metric_col_1, metric_col_2, metric_col_3 = st.columns(3)
     metric_col_1.metric("Ending NAV", format_money(ending_nav, base_currency))
-    metric_col_2.metric("Cumulative Return", format_pct(cumulative_return))
-    metric_col_3.metric("Annualized Return", format_pct(annualized_return))
-    metric_col_4.metric("1-Month Return", format_pct(one_month_return))
-    metric_col_5.metric("3-Month Return", format_pct(three_month_return))
+    metric_col_2.metric(
+        "Cumulative Return",
+        format_pct(cumulative_return),
+        help=method_tip,
+    )
+    metric_col_3.metric(
+        "Annualized Return",
+        format_pct(annualized_return),
+        help=method_tip,
+    )
 
-    metric_col_5, metric_col_6, metric_col_7, metric_col_8 = st.columns(4)
-    metric_col_5.metric("MTM", format_money(mtm, base_currency))
-    metric_col_6.metric("Net Deposits", format_money(deposits, base_currency))
-    metric_col_7.metric(
+    st.caption(f"Return method: {method_label}")
+
+    metric_col_4, metric_col_5, metric_col_6, metric_col_7 = st.columns(4)
+    metric_col_4.metric("MTM", format_money(mtm, base_currency))
+    metric_col_5.metric("Net Deposits", format_money(deposits, base_currency))
+    metric_col_6.metric(
         "Dividends + Interest", format_money(dividends + interest, base_currency)
     )
-    metric_col_8.metric("Fees & Commissions", format_money(fees, base_currency))
+    metric_col_7.metric("Fees & Commissions", format_money(fees, base_currency))
 
     nav_table = get_table(
         report, "Allocation by Asset Class", required_columns=["Date", "NAV"]
@@ -629,7 +701,9 @@ def render_overview_tab(
     st.plotly_chart(top_fig, use_container_width=True)
 
 
-def render_performance_tab(report: ParsedIBKRReport, account_hint: str) -> None:
+def render_performance_tab(
+    report: ParsedIBKRReport, account_hint: str, performance_measure: str
+) -> None:
     time_table = get_table(
         report,
         "Time Period Benchmark Comparison",
@@ -643,6 +717,7 @@ def render_performance_tab(report: ParsedIBKRReport, account_hint: str) -> None:
 
     periodic_returns_long = build_benchmark_long(time_table)
     cumulative_returns_long = build_benchmark_long(cumulative_table)
+    method_label, method_tip = return_method_label_and_tooltip(performance_measure)
     benchmark_names = []
     for benchmark_col in ("BM1", "BM2", "BM3"):
         if benchmark_col in time_table.columns:
@@ -726,18 +801,25 @@ def render_performance_tab(report: ParsedIBKRReport, account_hint: str) -> None:
                 st.plotly_chart(drawdown_fig, use_container_width=True)
 
     if not cumulative_returns_long.empty:
+        st.markdown(
+            (
+                "<div class='method-tip'>Cumulative Return Comparison "
+                f"<span class='hint-icon' title='{html.escape(method_tip)}'>i</span> "
+                f"<span class='hint-value'>{html.escape(method_label)}</span></div>"
+            ),
+            unsafe_allow_html=True,
+        )
         cumulative_fig = px.line(
             cumulative_returns_long,
             x="Date",
             y="Return",
             color="Series",
             template=PLOTLY_TEMPLATE,
-            title="Cumulative Return Comparison",
             color_discrete_sequence=CHART_COLORS,
         )
         cumulative_fig.update_layout(
             height=360,
-            margin={"l": 12, "r": 12, "t": 48, "b": 8},
+            margin={"l": 12, "r": 12, "t": 16, "b": 8},
             yaxis_title="Cumulative Return (%)",
             xaxis_title="Date",
             legend_title_text="Series",
@@ -763,38 +845,44 @@ def render_performance_tab(report: ParsedIBKRReport, account_hint: str) -> None:
         if not annualized_df.empty:
             annualized_df = annualized_df.sort_values("AnnualizedReturn", ascending=False)
         if not annualized_df.empty:
-            portfolio_annualized = annualized_df.loc[
-                annualized_df["Series"] == portfolio_series_name, "AnnualizedReturn"
-            ]
-            annualized_col_1, annualized_col_2 = st.columns((1.2, 2.0))
-            with annualized_col_1:
-                if not portfolio_annualized.empty:
-                    st.metric(
-                        "Portfolio Annualized Return",
-                        format_pct(float(portfolio_annualized.iloc[0])),
-                    )
-            with annualized_col_2:
-                annualized_fig = px.bar(
-                    annualized_df,
-                    x="Series",
-                    y="AnnualizedReturn",
-                    color="Series",
-                    template=PLOTLY_TEMPLATE,
-                    color_discrete_sequence=CHART_COLORS,
-                    title="Annualized Return vs Benchmarks",
-                    labels={"AnnualizedReturn": "Annualized return (%)", "Series": ""},
-                    text=annualized_df["AnnualizedReturn"].map(lambda value: f"{value:.2f}%"),
-                )
-                annualized_fig.update_layout(
-                    height=330,
-                    margin={"l": 12, "r": 12, "t": 48, "b": 8},
-                    showlegend=False,
-                )
-                annualized_fig.update_traces(
-                    textposition="outside",
-                    hovertemplate="%{x}<br>%{y:.2f}%<extra></extra>",
-                )
-                st.plotly_chart(annualized_fig, use_container_width=True)
+            st.markdown(
+                (
+                    "<div class='method-tip'>Annualized Return vs Benchmarks "
+                    f"<span class='hint-icon' title='{html.escape(method_tip)}'>i</span> "
+                    f"<span class='hint-value'>{html.escape(method_label)}</span></div>"
+                ),
+                unsafe_allow_html=True,
+            )
+            y_max = float(annualized_df["AnnualizedReturn"].max())
+            y_min = float(annualized_df["AnnualizedReturn"].min())
+            span = max(y_max - y_min, 1.0)
+            upper_padding = max(span * 0.16, 1.2)
+            lower_padding = max(span * 0.06, 0.6)
+            y_start = min(0.0, y_min - lower_padding)
+            y_end = y_max + upper_padding
+
+            annualized_fig = px.bar(
+                annualized_df,
+                x="Series",
+                y="AnnualizedReturn",
+                color="Series",
+                template=PLOTLY_TEMPLATE,
+                color_discrete_sequence=CHART_COLORS,
+                labels={"AnnualizedReturn": "Annualized return (%)", "Series": ""},
+                text=annualized_df["AnnualizedReturn"].map(lambda value: f"{value:.2f}%"),
+            )
+            annualized_fig.update_layout(
+                height=360,
+                margin={"l": 12, "r": 12, "t": 22, "b": 8},
+                showlegend=False,
+                yaxis_range=[y_start, y_end],
+            )
+            annualized_fig.update_traces(
+                textposition="outside",
+                cliponaxis=False,
+                hovertemplate="%{x}<br>%{y:.2f}%<extra></extra>",
+            )
+            st.plotly_chart(annualized_fig, use_container_width=True)
     else:
         st.info("Cumulative benchmark comparison was not found.")
 
@@ -1680,6 +1768,7 @@ def streamlit_app() -> None:
     account_id = profile.get("Account", "")
     base_currency = profile.get("BaseCurrency", "")
     analysis_period = profile.get("AnalysisPeriod", "")
+    performance_measure = profile.get("PerformanceMeasure", "")
     period_start, period_end = extract_report_period(report, profile)
     analysis_years = period_years(period_start, period_end)
     period_length_display = f"{analysis_years:.2f} years" if pd.notna(analysis_years) else "-"
@@ -1690,6 +1779,7 @@ def streamlit_app() -> None:
             <b>{report_source}</b><br/>
             Account: <b>{account_name}</b> ({account_id})<br/>
             Base Currency: <b>{base_currency or "-"}</b><br/>
+            Return Measure: <b>{performance_measure or "-"}</b><br/>
             Analysis Period: <b>{analysis_period or "-"}</b><br/>
             Period Length: <b>{period_length_display}</b><br/>
             Parsed Sections: <b>{len(report.tables)}</b>
@@ -1719,10 +1809,16 @@ def streamlit_app() -> None:
     )
 
     with overview_tab:
-        render_overview_tab(report, key_stats_row, base_currency, analysis_years)
+        render_overview_tab(
+            report,
+            key_stats_row,
+            base_currency,
+            analysis_years,
+            performance_measure,
+        )
 
     with performance_tab:
-        render_performance_tab(report, account_id)
+        render_performance_tab(report, account_id, performance_measure)
 
     with holdings_tab:
         render_holdings_tab(report, base_currency)
