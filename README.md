@@ -24,9 +24,10 @@ A modern dark-mode Streamlit app for analyzing Interactive Brokers (IBKR) Portfo
 
 1. Sign in to **IBKR Client Portal**.
 2. Go to **Performance & Reports**.
-3. Open **PortfolioAnalyst** and select account/date range.
-4. Export/download report as **CSV**.
-5. Upload that CSV in this app.
+3. Open **PortfolioAnalyst**.
+4. Click **Report**.
+5. Download the **since inception** report as **CSV**.
+6. Upload that CSV in this app.
 
 ## Local setup
 

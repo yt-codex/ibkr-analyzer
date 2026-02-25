@@ -52,7 +52,8 @@ def inject_custom_css() -> None:
 
             .block-container {
                 max-width: 1300px;
-                padding-top: 1.2rem;
+                padding-top: 2.2rem;
+                padding-bottom: 1.25rem;
             }
 
             h1, h2, h3 {
@@ -65,6 +66,7 @@ def inject_custom_css() -> None:
                 border: 1px solid rgba(148, 189, 255, 0.25);
                 border-radius: 18px;
                 padding: 1.1rem 1.25rem;
+                margin-top: 0.35rem;
                 margin-bottom: 1rem;
                 box-shadow: 0 16px 32px rgba(4, 8, 20, 0.45);
             }
@@ -965,6 +967,115 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
         st.plotly_chart(traded_fig, use_container_width=True)
 
 
+def render_concentration_tab(report: ParsedIBKRReport) -> None:
+    concentration = get_table(
+        report,
+        "Concentration",
+        required_columns=[
+            "SubSection",
+            "Symbol",
+            "Description",
+            "LongParsedWeight",
+            "ShortParsedWeight",
+            "NetParsedWeight",
+        ],
+    )
+    if concentration.empty:
+        st.info("Concentration table was not found in this report.")
+        return
+
+    concentration = concentration.copy()
+    concentration["SubSection"] = concentration["SubSection"].astype(str).str.strip()
+    concentration["Symbol"] = concentration["Symbol"].astype(str).str.strip()
+    concentration["Description"] = concentration["Description"].astype(str).str.strip()
+    concentration = concentration[
+        concentration["SubSection"].str.lower() == "holdings"
+    ].copy()
+
+    long_weight = to_numeric(concentration["LongParsedWeight"])
+    short_weight = to_numeric(concentration["ShortParsedWeight"])
+    concentration["NetWeight"] = to_numeric(concentration["NetParsedWeight"])
+
+    # Keep top-level underlying stock rows and drop ETF decomposition rows.
+    concentration = concentration[(long_weight.notna()) | (short_weight.notna())]
+    concentration = sanitize_total_rows(concentration, "Symbol", drop_blank=True)
+    concentration = sanitize_total_rows(concentration, "Description")
+    concentration = concentration.dropna(subset=["NetWeight"])
+    concentration = concentration[concentration["NetWeight"] > 0]
+
+    if concentration.empty:
+        st.info("No positive underlying concentration weights were detected.")
+        return
+
+    stock_exposure = (
+        concentration.groupby(["Symbol", "Description"], as_index=False)["NetWeight"]
+        .sum()
+        .sort_values("NetWeight", ascending=False)
+    )
+    total_weight = stock_exposure["NetWeight"].sum()
+    top_n = st.slider("Top stocks in donut", min_value=5, max_value=30, value=12, step=1)
+
+    top = stock_exposure.head(top_n).copy()
+    others_weight = total_weight - top["NetWeight"].sum()
+    donut_data = top[["Symbol", "NetWeight"]].rename(
+        columns={"Symbol": "Bucket", "NetWeight": "Weight"}
+    )
+    if others_weight > 0.00001:
+        donut_data = pd.concat(
+            [donut_data, pd.DataFrame([{"Bucket": "Others", "Weight": others_weight}])],
+            ignore_index=True,
+        )
+
+    metrics_col_1, metrics_col_2, metrics_col_3 = st.columns(3)
+    top_row = stock_exposure.iloc[0]
+    metrics_col_1.metric("Top Underlying", str(top_row["Symbol"]))
+    metrics_col_2.metric("Top Weight", format_pct(top_row["NetWeight"]))
+    metrics_col_3.metric("Top-N Coverage", format_pct(top["NetWeight"].sum()))
+
+    concentration_col_1, concentration_col_2 = st.columns((1.15, 1.0))
+    with concentration_col_1:
+        donut_fig = px.pie(
+            donut_data,
+            names="Bucket",
+            values="Weight",
+            hole=0.58,
+            template=PLOTLY_TEMPLATE,
+            title="Underlying Stock Concentration",
+            color_discrete_sequence=CHART_COLORS,
+        )
+        donut_fig.update_traces(
+            textposition="inside",
+            textinfo="percent+label",
+            hovertemplate="%{label}<br>%{value:.4f}%<extra></extra>",
+        )
+        donut_fig.update_layout(height=390, margin={"l": 8, "r": 8, "t": 48, "b": 8})
+        st.plotly_chart(donut_fig, use_container_width=True)
+
+    with concentration_col_2:
+        bar_fig = px.bar(
+            top.sort_values("NetWeight"),
+            x="NetWeight",
+            y="Symbol",
+            orientation="h",
+            template=PLOTLY_TEMPLATE,
+            title="Top Underlying Stocks",
+            color="NetWeight",
+            color_continuous_scale=["#1f6e73", "#28d5b5"],
+            labels={"NetWeight": "Weight (%)", "Symbol": ""},
+        )
+        bar_fig.update_layout(
+            height=390,
+            margin={"l": 8, "r": 8, "t": 48, "b": 8},
+            coloraxis_showscale=False,
+        )
+        st.plotly_chart(bar_fig, use_container_width=True)
+
+    stock_table = stock_exposure.head(40).copy()
+    stock_table["NetWeight"] = stock_table["NetWeight"].map(format_pct)
+    st.subheader("Underlying Stock Weights")
+    st.dataframe(stock_table, use_container_width=True, hide_index=True)
+
+
 def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> None:
     cashflows = get_table(
         report,
@@ -1365,9 +1476,10 @@ def streamlit_app() -> None:
                 """
                 1. Sign in to **IBKR Client Portal**.
                 2. Go to **Performance & Reports**.
-                3. Open **PortfolioAnalyst** and choose account + date range.
-                4. Export/download the report as **CSV**.
-                5. Upload the CSV file in this app.
+                3. Open **PortfolioAnalyst**.
+                4. Click **Report**.
+                5. Download the **since inception** report as **CSV**.
+                6. Upload the CSV file in this app.
                 """
             )
 
@@ -1421,6 +1533,7 @@ def streamlit_app() -> None:
         overview_tab,
         performance_tab,
         holdings_tab,
+        concentration_tab,
         cashflow_tab,
         risk_esg_tab,
         raw_tab,
@@ -1429,6 +1542,7 @@ def streamlit_app() -> None:
             "Overview",
             "Performance",
             "Holdings",
+            "Concentration",
             "Cashflow & Income",
             "Risk & ESG",
             "Raw Tables",
@@ -1443,6 +1557,9 @@ def streamlit_app() -> None:
 
     with holdings_tab:
         render_holdings_tab(report, base_currency)
+
+    with concentration_tab:
+        render_concentration_tab(report)
 
     with cashflow_tab:
         render_cashflow_income_tab(report, base_currency)
