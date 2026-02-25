@@ -1013,7 +1013,7 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
         .sort_values("NetWeight", ascending=False)
     )
     total_weight = stock_exposure["NetWeight"].sum()
-    max_top = max(1, min(30, len(stock_exposure)))
+    max_top = max(1, min(20, len(stock_exposure)))
     default_top = min(12, max_top)
     top_n = st.slider(
         "Top stocks in donut",
@@ -1043,6 +1043,22 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
     metrics_col_2.metric("Top Weight", format_pct(top_row["NetWeight"]))
     metrics_col_3.metric("Top-N Coverage", format_pct(top_coverage))
 
+    holdings_count = len(stock_exposure)
+    milestone_metrics = []
+    for point in (5, 10, 20, 50):
+        top_count = min(point, holdings_count)
+        if not milestone_metrics or milestone_metrics[-1][0] != top_count:
+            label = f"Top {top_count}"
+            if top_count == holdings_count and holdings_count < 50:
+                label = f"Top {top_count} (All)"
+            covered = stock_exposure.head(top_count)["NetWeight"].sum()
+            coverage_pct = (covered / total_weight) * 100 if total_weight > 0 else np.nan
+            milestone_metrics.append((label, coverage_pct))
+
+    milestone_columns = st.columns(len(milestone_metrics))
+    for metric_col, (label, value) in zip(milestone_columns, milestone_metrics):
+        metric_col.metric(label, format_pct(value))
+
     concentration_col_1, concentration_col_2 = st.columns((1.15, 1.0))
     with concentration_col_1:
         donut_fig = px.pie(
@@ -1063,23 +1079,22 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
         st.plotly_chart(donut_fig, use_container_width=True)
 
     with concentration_col_2:
-        holdings_count = len(stock_exposure)
-        checkpoints = list(range(5, holdings_count + 1, 5))
-        if holdings_count < 5:
-            checkpoints = [holdings_count]
-        elif checkpoints and checkpoints[-1] != holdings_count:
-            checkpoints.append(holdings_count)
+        focus_limit = min(50, holdings_count)
+        milestone_candidates = [5, 10, 20, 30, 40, 50]
+        checkpoints = [point for point in milestone_candidates if point <= focus_limit]
+        if not checkpoints:
+            checkpoints = [focus_limit]
+        elif checkpoints[-1] != focus_limit:
+            checkpoints.append(focus_limit)
 
         coverage_rows: list[dict[str, float | str]] = []
         for checkpoint in checkpoints:
             covered_weight = stock_exposure.head(checkpoint)["NetWeight"].sum()
             coverage_pct = (covered_weight / total_weight) * 100 if total_weight > 0 else np.nan
             label = f"Top {checkpoint}"
-            if checkpoint == holdings_count and holdings_count < 5:
+            if checkpoint == holdings_count and holdings_count < 50:
                 label = f"Top {checkpoint} (All)"
-            coverage_rows.append(
-                {"Bucket": label, "CoveragePct": coverage_pct, "TopCount": checkpoint}
-            )
+            coverage_rows.append({"Bucket": label, "CoveragePct": coverage_pct})
 
         coverage_df = pd.DataFrame(coverage_rows)
         coverage_fig = px.bar(
@@ -1087,7 +1102,7 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
             x="Bucket",
             y="CoveragePct",
             template=PLOTLY_TEMPLATE,
-            title="Cumulative Coverage by Top Holdings",
+            title="Cumulative Coverage Milestones (Top 50 Max)",
             color="CoveragePct",
             color_continuous_scale=["#1f6e73", "#28d5b5"],
             labels={"CoveragePct": "Cumulative coverage (%)", "Bucket": ""},
@@ -1105,10 +1120,18 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
         )
         st.plotly_chart(coverage_fig, use_container_width=True)
 
-    stock_table = stock_exposure.head(40).copy()
+    stock_table = stock_exposure.head(50).copy()
+    stock_table["CumulativeCoverage"] = (
+        stock_table["NetWeight"].cumsum() / total_weight * 100 if total_weight > 0 else np.nan
+    )
     stock_table["NetWeight"] = stock_table["NetWeight"].map(format_pct)
+    stock_table["CumulativeCoverage"] = stock_table["CumulativeCoverage"].map(format_pct)
     st.subheader("Underlying Stock Weights")
-    st.dataframe(stock_table, use_container_width=True, hide_index=True)
+    st.dataframe(
+        stock_table[["Symbol", "Description", "NetWeight", "CumulativeCoverage"]],
+        use_container_width=True,
+        hide_index=True,
+    )
 
 
 def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> None:
