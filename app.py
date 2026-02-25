@@ -1013,10 +1013,21 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
         .sort_values("NetWeight", ascending=False)
     )
     total_weight = stock_exposure["NetWeight"].sum()
-    top_n = st.slider("Top stocks in donut", min_value=5, max_value=30, value=12, step=1)
+    max_top = max(1, min(30, len(stock_exposure)))
+    default_top = min(12, max_top)
+    top_n = st.slider(
+        "Top stocks in donut",
+        min_value=1,
+        max_value=max_top,
+        value=default_top,
+        step=1,
+    )
 
     top = stock_exposure.head(top_n).copy()
     others_weight = total_weight - top["NetWeight"].sum()
+    top_coverage = (
+        (top["NetWeight"].sum() / total_weight) * 100 if total_weight > 0 else np.nan
+    )
     donut_data = top[["Symbol", "NetWeight"]].rename(
         columns={"Symbol": "Bucket", "NetWeight": "Weight"}
     )
@@ -1030,7 +1041,7 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
     top_row = stock_exposure.iloc[0]
     metrics_col_1.metric("Top Underlying", str(top_row["Symbol"]))
     metrics_col_2.metric("Top Weight", format_pct(top_row["NetWeight"]))
-    metrics_col_3.metric("Top-N Coverage", format_pct(top["NetWeight"].sum()))
+    metrics_col_3.metric("Top-N Coverage", format_pct(top_coverage))
 
     concentration_col_1, concentration_col_2 = st.columns((1.15, 1.0))
     with concentration_col_1:
@@ -1045,30 +1056,54 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
         )
         donut_fig.update_traces(
             textposition="inside",
-            textinfo="percent+label",
-            hovertemplate="%{label}<br>%{value:.4f}%<extra></extra>",
+            texttemplate="%{label}<br>%{percent:.2%}",
+            hovertemplate="%{label}<br>%{value:.2f}%<extra></extra>",
         )
         donut_fig.update_layout(height=390, margin={"l": 8, "r": 8, "t": 48, "b": 8})
         st.plotly_chart(donut_fig, use_container_width=True)
 
     with concentration_col_2:
-        bar_fig = px.bar(
-            top.sort_values("NetWeight"),
-            x="NetWeight",
-            y="Symbol",
-            orientation="h",
+        holdings_count = len(stock_exposure)
+        checkpoints = list(range(5, holdings_count + 1, 5))
+        if holdings_count < 5:
+            checkpoints = [holdings_count]
+        elif checkpoints and checkpoints[-1] != holdings_count:
+            checkpoints.append(holdings_count)
+
+        coverage_rows: list[dict[str, float | str]] = []
+        for checkpoint in checkpoints:
+            covered_weight = stock_exposure.head(checkpoint)["NetWeight"].sum()
+            coverage_pct = (covered_weight / total_weight) * 100 if total_weight > 0 else np.nan
+            label = f"Top {checkpoint}"
+            if checkpoint == holdings_count and holdings_count < 5:
+                label = f"Top {checkpoint} (All)"
+            coverage_rows.append(
+                {"Bucket": label, "CoveragePct": coverage_pct, "TopCount": checkpoint}
+            )
+
+        coverage_df = pd.DataFrame(coverage_rows)
+        coverage_fig = px.bar(
+            coverage_df,
+            x="Bucket",
+            y="CoveragePct",
             template=PLOTLY_TEMPLATE,
-            title="Top Underlying Stocks",
-            color="NetWeight",
+            title="Cumulative Coverage by Top Holdings",
+            color="CoveragePct",
             color_continuous_scale=["#1f6e73", "#28d5b5"],
-            labels={"NetWeight": "Weight (%)", "Symbol": ""},
+            labels={"CoveragePct": "Cumulative coverage (%)", "Bucket": ""},
+            text=coverage_df["CoveragePct"].map(lambda value: f"{value:.2f}%"),
         )
-        bar_fig.update_layout(
+        coverage_fig.update_layout(
             height=390,
             margin={"l": 8, "r": 8, "t": 48, "b": 8},
             coloraxis_showscale=False,
+            yaxis_range=[0, 100],
         )
-        st.plotly_chart(bar_fig, use_container_width=True)
+        coverage_fig.update_traces(
+            textposition="outside",
+            hovertemplate="%{x}<br>%{y:.2f}%<extra></extra>",
+        )
+        st.plotly_chart(coverage_fig, use_container_width=True)
 
     stock_table = stock_exposure.head(40).copy()
     stock_table["NetWeight"] = stock_table["NetWeight"].map(format_pct)
