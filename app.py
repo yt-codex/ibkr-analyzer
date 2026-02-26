@@ -742,28 +742,64 @@ def render_performance_tab(
             )
         )
 
+    annual_returns_long = pd.DataFrame()
+    if not periodic_returns_long.empty:
+        annual_returns_long = periodic_returns_long.copy()
+        annual_returns_long = annual_returns_long.dropna(subset=["Date", "Return"])
+        annual_returns_long["Year"] = annual_returns_long["Date"].dt.year
+        annual_returns_long = (
+            annual_returns_long.groupby(["Series", "Year"], as_index=False)
+            .agg(
+                AnnualReturn=(
+                    "Return",
+                    lambda values: ((1 + (values / 100.0)).prod() - 1) * 100,
+                )
+            )
+            .sort_values(["Year", "Series"])
+        )
+        current_year = pd.Timestamp.today().year
+        annual_returns_long["YearLabel"] = annual_returns_long["Year"].astype(int).astype(str)
+        annual_returns_long.loc[
+            annual_returns_long["Year"] == current_year, "YearLabel"
+        ] = (
+            annual_returns_long.loc[
+                annual_returns_long["Year"] == current_year, "YearLabel"
+            ]
+            + " YTD"
+        )
+
     performance_chart_col, drawdown_chart_col = st.columns((1.3, 1.0))
 
     with performance_chart_col:
-        if periodic_returns_long.empty:
-            st.info("Time period benchmark comparison was not found.")
+        if annual_returns_long.empty:
+            st.info("Annual return comparison data was not found.")
         else:
-            perf_fig = px.line(
-                periodic_returns_long,
-                x="Date",
-                y="Return",
+            year_order = (
+                annual_returns_long[["Year", "YearLabel"]]
+                .drop_duplicates()
+                .sort_values("Year")["YearLabel"]
+                .tolist()
+            )
+            perf_fig = px.bar(
+                annual_returns_long,
+                x="YearLabel",
+                y="AnnualReturn",
                 color="Series",
-                markers=True,
+                barmode="group",
                 template=PLOTLY_TEMPLATE,
-                title="Periodic Return Comparison",
+                title="Annual Return Comparison",
                 color_discrete_sequence=CHART_COLORS,
+                category_orders={"YearLabel": year_order},
             )
             perf_fig.update_layout(
                 height=360,
                 margin={"l": 12, "r": 12, "t": 48, "b": 8},
                 yaxis_title="Return (%)",
-                xaxis_title="Date",
+                xaxis_title="Year",
                 legend_title_text="Series",
+            )
+            perf_fig.update_traces(
+                hovertemplate="%{x}<br>%{fullData.name}: %{y:.2f}%<extra></extra>"
             )
             st.plotly_chart(perf_fig, use_container_width=True)
 
