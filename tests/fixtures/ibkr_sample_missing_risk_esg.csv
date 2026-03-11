@@ -1,0 +1,18 @@
+Introduction,Header,Name,Account,Alias,BaseCurrency,AccountType,AnalysisPeriod,PerformanceMeasure
+Introduction,Data,ACCOUNT HOLDER,U0000000,,SGD,Individual,"April 26, 2022 to February 25, 2026 (Monthly)",TWR
+Key Statistics,MetaInfo,Analysis Period,"April 26, 2022 - February 25, 2026"
+Key Statistics,Header,BeginningNAV,EndingNAV,CumulativeReturn,MTM,Deposits & Withdrawals,Dividends,Interest,Fees & Commissions,Other
+Key Statistics,Data,0,708812.1419,71.4846509,201448.059,544445,644.595285,52.118248,-382.9457193,-37394.68488
+Allocation by Asset Class,MetaInfo,Analysis Period,"April 26, 2022 - February 25, 2026"
+Allocation by Asset Class,Header,Date,Equities,Cash,NAV
+Allocation by Asset Class,Data,202204,4791.515456,5290.218527,10081.73398
+Allocation by Asset Class,Data,202602,704273.3989,4538.743,708812.1419
+Open Position Summary,MetaInfo,As Of,"February 25, 2026"
+Open Position Summary,Header,Date,FinancialInstrument,Currency,Symbol,Description,Sector,Quantity,ClosePrice,Value,Cost Basis,UnrealizedP&L
+Open Position Summary,Data,02/25/2026,ETFs,USD,SYM001,Description 001,Broad,201.4174,743.7,149794.12,94994.12942,54799.99058
+Open Position Summary,Data,02/25/2026,ETFs,USD,SYM002,Description 002,Broad,2769.7551,113.86,315364.32,244054.6908,71309.62922
+Open Position Summary,Data,Total,ETFs,SGD,,,,,,704273.3989,506827.3168,197446.0821
+Projected Income,MetaInfo,As Of,"February 25, 2026"
+Projected Income,Header,Financial Instrument,Symbol,Description,Frequency,Quantity,Price,Value,Current Yield %,Principal,Estimated Annual Income,Estimated 2026 Remaining Income
+Projected Income,Data,ETFs,SYM003,Description 012,4,134,253.83,42979.10479,0.509002088,-,218.7645408,218.7645408
+Projected Income,Data,,Total,,,,,42979.10479,0.509002088,,218.7645408,218.7645408

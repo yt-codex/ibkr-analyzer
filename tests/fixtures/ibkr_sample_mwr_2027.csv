@@ -1,0 +1,15 @@
+Introduction,Header,Name,Account,Alias,BaseCurrency,AccountType,AnalysisPeriod,PerformanceMeasure
+Introduction,Data,ACCOUNT HOLDER,U0000000,,USD,Individual,2026-01-01 - 2027-03-31,MWR
+Key Statistics,MetaInfo,Analysis Period,2026-01-01 - 2027-03-31
+Key Statistics,Header,BeginningNAV,EndingNAV,CumulativeReturn,MTM,Deposits & Withdrawals,Dividends,Interest,Fees & Commissions,Other
+Key Statistics,Data,100000,132500,32.5,15000,12000,500,100,-50,-50
+Time Period Benchmark Comparison,Header,Date,BM1,BM1Return,BM2,BM2Return,BM3,BM3Return,Account,AccountReturn
+Time Period Benchmark Comparison,Data,Jan-26,SPXTR,1.5,EFA,2.0,VT,1.8,U0000000,1.2
+Time Period Benchmark Comparison,Data,Feb-26,SPXTR,-0.5,EFA,0.4,VT,0.1,U0000000,0.8
+Cumulative Benchmark Comparison,Header,Date,BM1,BM1Return,BM2,BM2Return,BM3,BM3Return,Account,AccountReturn
+Cumulative Benchmark Comparison,Data,Jan-26,SPXTR,1.5,EFA,2.0,VT,1.8,U0000000,1.2
+Cumulative Benchmark Comparison,Data,Feb-26,SPXTR,0.99,EFA,2.41,VT,1.90,U0000000,2.01
+Projected Income,MetaInfo,As Of,"March 31, 2027"
+Projected Income,Header,Financial Instrument,Symbol,Description,Frequency,Quantity,Price,Value,Current Yield %,Principal,Estimated Annual Income,Estimated 2027 Remaining Income
+Projected Income,Data,ETFs,SYM001,Description 001,4,100,100,10000,3.2,-,320,240
+Projected Income,Data,,Total,,,,,10000,3.2,,320,240

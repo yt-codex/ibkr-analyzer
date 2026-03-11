@@ -63,7 +63,14 @@ python -m unittest discover -s tests -v
 Notes:
 
 - `tests/fixtures/ibkr_sample_anonymized.csv` is the committed, sanitized fixture used by CI.
+- Additional variants in `tests/fixtures/ibkr_sample_*.csv` cover missing-section and year-rollover cases.
 - Other raw CSVs under `tests/fixtures/` are gitignored so personal exports stay local.
+
+To sanitize a new local IBKR export into a committed fixture:
+
+```powershell
+python scripts\sanitize_ibkr_fixture.py tests\fixtures\YOUR_LOCAL_EXPORT.csv tests\fixtures\ibkr_sample_new.csv
+```
 
 ## Deploy online with Streamlit Community Cloud
 

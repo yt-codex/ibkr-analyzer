@@ -5,4 +5,4 @@ __pycache__/
 .DS_Store
 Thumbs.db
 tests/fixtures/*.csv
-!tests/fixtures/ibkr_sample_anonymized.csv
+!tests/fixtures/ibkr_sample*.csv
