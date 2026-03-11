@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import html
 import io
 import re
@@ -24,6 +25,7 @@ class ParsedIBKRReport:
 NULL_MARKERS = {"", "-", "--", "N/A", "NA", "null", "None"}
 PLOTLY_TEMPLATE = "plotly_dark"
 CHART_COLORS = ["#28d5b5", "#5ca3ff", "#ff8e53", "#ff5f8f", "#81f495", "#eeb6ff"]
+TOTAL_ROW_PATTERN = re.compile(r"(?:grand\s+)?totals?|sub\s*total", re.IGNORECASE)
 
 
 def inject_custom_css() -> None:
@@ -312,8 +314,8 @@ def parse_report_date(value: object) -> pd.Timestamp:
 
 def parse_analysis_period_text(text: str) -> tuple[pd.Timestamp, pd.Timestamp]:
     cleaned = re.sub(r"\(.*?\)", "", str(text)).strip()
-    cleaned = cleaned.replace(" to ", " - ")
-    parts = re.split(r"\s*-\s*", cleaned, maxsplit=1)
+    cleaned = cleaned.replace("–", " - ").replace("—", " - ")
+    parts = re.split(r"\s+(?:to|-)\s+", cleaned, maxsplit=1, flags=re.IGNORECASE)
     if len(parts) != 2:
         return pd.NaT, pd.NaT
 
@@ -405,6 +407,72 @@ def format_pct(value: float) -> str:
     return f"{value:,.2f}%"
 
 
+def format_panel_value(value: object, default: str = "-") -> str:
+    text = str(value).strip() if value is not None else ""
+    return html.escape(text) if text else default
+
+
+def value_or_zero(value: float) -> float:
+    return 0.0 if pd.isna(value) else float(value)
+
+
+def find_projected_remaining_income_column(columns: pd.Index | list[str]) -> str | None:
+    candidates: list[tuple[int, str]] = []
+    for column in columns:
+        column_name = str(column).strip()
+        if re.fullmatch(
+            r"Estimated \d{4} Remaining Income", column_name, flags=re.IGNORECASE
+        ):
+            year_match = re.search(r"(\d{4})", column_name)
+            year = int(year_match.group(1)) if year_match else -1
+            candidates.append((year, column_name))
+        elif re.fullmatch(
+            r"Estimated Remaining Income", column_name, flags=re.IGNORECASE
+        ):
+            candidates.append((-1, column_name))
+
+    if not candidates:
+        return None
+    return max(candidates, key=lambda item: item[0])[1]
+
+
+def remaining_income_metric_label(column_name: str | None) -> str:
+    if not column_name:
+        return "Remaining Income"
+    year_match = re.search(r"(\d{4})", column_name)
+    if not year_match:
+        return "Remaining Income"
+    return f"Remaining {year_match.group(1)} Income"
+
+
+def build_report_summary_html(
+    report_source: str,
+    account_name: str,
+    account_id: str,
+    base_currency: str,
+    performance_measure: str,
+    analysis_period: str,
+    period_length_display: str,
+    parsed_sections: int,
+) -> str:
+    account_suffix = (
+        f" ({format_panel_value(account_id, default='')})"
+        if str(account_id).strip()
+        else ""
+    )
+    return f"""
+        <div class="panel">
+            <b>{format_panel_value(report_source)}</b><br/>
+            Account: <b>{format_panel_value(account_name, default="Unknown")}</b>{account_suffix}<br/>
+            Base Currency: <b>{format_panel_value(base_currency)}</b><br/>
+            Return Measure: <b>{format_panel_value(performance_measure)}</b><br/>
+            Analysis Period: <b>{format_panel_value(analysis_period)}</b><br/>
+            Period Length: <b>{format_panel_value(period_length_display)}</b><br/>
+            Parsed Sections: <b>{parsed_sections}</b>
+        </div>
+        """
+
+
 def sanitize_total_rows(
     data_frame: pd.DataFrame, column_name: str, drop_blank: bool = False
 ) -> pd.DataFrame:
@@ -412,10 +480,11 @@ def sanitize_total_rows(
     if column_name not in filtered.columns:
         return filtered
 
-    mask = filtered[column_name].astype(str).str.contains("Total", case=False, na=False)
+    normalized = filtered[column_name].astype(str).str.strip().str.rstrip(":")
+    mask = normalized.str.fullmatch(TOTAL_ROW_PATTERN, na=False)
     filtered = filtered.loc[~mask]
     if drop_blank:
-        filtered = filtered.loc[filtered[column_name].astype(str).str.strip() != ""]
+        filtered = filtered.loc[normalized != ""]
     return filtered
 
 
@@ -551,7 +620,8 @@ def render_overview_tab(
     metric_col_4.metric("MTM", format_money(mtm, base_currency))
     metric_col_5.metric("Net Deposits", format_money(deposits, base_currency))
     metric_col_6.metric(
-        "Dividends + Interest", format_money(dividends + interest, base_currency)
+        "Dividends + Interest",
+        format_money(value_or_zero(dividends) + value_or_zero(interest), base_currency),
     )
     metric_col_7.metric("Fees & Commissions", format_money(fees, base_currency))
 
@@ -1379,7 +1449,7 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
     projected_income = get_table(
         report,
         "Projected Income",
-        required_columns=["Estimated Annual Income", "Estimated 2026 Remaining Income"],
+        required_columns=["Estimated Annual Income"],
     )
 
     if not cashflows.empty:
@@ -1499,6 +1569,9 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
 
     if not projected_income.empty:
         projected_income_total = projected_income.copy()
+        remaining_income_column = find_projected_remaining_income_column(
+            projected_income_total.columns
+        )
         if "Symbol" in projected_income_total.columns:
             preferred_rows = projected_income_total.loc[
                 projected_income_total["Symbol"].astype(str).str.strip().str.lower() == "total"
@@ -1512,15 +1585,20 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
             projected_row = projected_income_total.iloc[-1]
 
         annual_income = parse_number(projected_row.get("Estimated Annual Income"))
-        remaining_income = parse_number(projected_row.get("Estimated 2026 Remaining Income"))
+        remaining_income = (
+            parse_number(projected_row.get(remaining_income_column))
+            if remaining_income_column
+            else np.nan
+        )
         yield_value = parse_number(projected_row.get("Current Yield %"))
+        remaining_income_label = remaining_income_metric_label(remaining_income_column)
 
         project_col_1, project_col_2, project_col_3 = st.columns(3)
         project_col_1.metric(
             "Projected Annual Income", format_money(annual_income, base_currency)
         )
         project_col_2.metric(
-            "Remaining 2026 Income", format_money(remaining_income, base_currency)
+            remaining_income_label, format_money(remaining_income, base_currency)
         )
         project_col_3.metric("Current Yield", format_pct(yield_value))
 
@@ -1788,7 +1866,15 @@ def streamlit_app() -> None:
         return
 
     try:
-        report = parse_ibkr_report(report_bytes)
+        report_digest = hashlib.sha256(report_bytes).hexdigest()
+        cached_digest = st.session_state.get("report_cache_digest")
+        cached_report = st.session_state.get("report_cache_value")
+        if cached_digest == report_digest and isinstance(cached_report, ParsedIBKRReport):
+            report = cached_report
+        else:
+            report = parse_ibkr_report(report_bytes)
+            st.session_state["report_cache_digest"] = report_digest
+            st.session_state["report_cache_value"] = report
     except Exception as error:  # noqa: BLE001
         st.error(f"Failed to parse report: {error}")
         return
@@ -1810,17 +1896,16 @@ def streamlit_app() -> None:
     period_length_display = f"{analysis_years:.2f} years" if pd.notna(analysis_years) else "-"
 
     st.markdown(
-        f"""
-        <div class="panel">
-            <b>{report_source}</b><br/>
-            Account: <b>{account_name}</b> ({account_id})<br/>
-            Base Currency: <b>{base_currency or "-"}</b><br/>
-            Return Measure: <b>{performance_measure or "-"}</b><br/>
-            Analysis Period: <b>{analysis_period or "-"}</b><br/>
-            Period Length: <b>{period_length_display}</b><br/>
-            Parsed Sections: <b>{len(report.tables)}</b>
-        </div>
-        """,
+        build_report_summary_html(
+            report_source=report_source,
+            account_name=account_name,
+            account_id=account_id,
+            base_currency=base_currency,
+            performance_measure=performance_measure,
+            analysis_period=analysis_period,
+            period_length_display=period_length_display,
+            parsed_sections=len(report.tables),
+        ),
         unsafe_allow_html=True,
     )
 

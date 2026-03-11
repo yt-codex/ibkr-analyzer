@@ -18,7 +18,7 @@ A modern dark-mode Streamlit app for analyzing Interactive Brokers (IBKR) Portfo
 
 - Uploaded files are processed **in memory** for the active Streamlit session.
 - The app **does not write uploaded data to disk**, database, or external storage.
-- No caching is used for uploaded report contents.
+- Parsed report data is retained in **session memory only** to avoid reparsing on Streamlit reruns.
 
 ## IBKR export steps (concise)
 
