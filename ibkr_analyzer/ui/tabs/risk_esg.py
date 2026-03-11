@@ -11,6 +11,7 @@ from ibkr_analyzer.report_utils import (
     to_numeric,
 )
 from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
+from ibkr_analyzer.ui.tables import render_dataframe
 
 
 def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
@@ -112,7 +113,7 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
             st.plotly_chart(risk_bar, use_container_width=True)
 
         st.subheader("Absolute Risk Measures")
-        st.dataframe(
+        render_dataframe(
             risk_absolute.drop(columns=["Metric"]),
             use_container_width=True,
             hide_index=True,
@@ -122,7 +123,7 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
 
     if not risk_relative.empty:
         st.subheader("Risk Measures Relative to Benchmarks")
-        st.dataframe(risk_relative, use_container_width=True, hide_index=True)
+        render_dataframe(risk_relative, use_container_width=True, hide_index=True)
 
     esg_summary = get_table(report, "ESG", required_columns=["SubSection", "Category", "Score"])
     esg_holdings = get_table(
@@ -202,4 +203,4 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
             table_view = esg_holdings[
                 ["Symbol", "Description", "Weight (%)", "ESG", "Combined"]
             ].copy()
-            st.dataframe(table_view, use_container_width=True, hide_index=True)
+            render_dataframe(table_view, use_container_width=True, hide_index=True)

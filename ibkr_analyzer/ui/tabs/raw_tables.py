@@ -1,6 +1,7 @@
 import streamlit as st
 
 from ibkr_analyzer.report_utils import ParsedIBKRReport
+from ibkr_analyzer.ui.tables import render_dataframe
 
 
 def render_raw_tables_tab(report: ParsedIBKRReport) -> None:
@@ -21,5 +22,10 @@ def render_raw_tables_tab(report: ParsedIBKRReport) -> None:
     selected_index = table_options.index(selected_label)
     selected_table = tables[selected_index]
 
-    st.dataframe(selected_table, use_container_width=True, height=480, hide_index=True)
+    render_dataframe(
+        selected_table,
+        use_container_width=True,
+        height=480,
+        hide_index=True,
+    )
     st.caption(f"Metadata rows in section: {len(report.metadata.get(section, []))}")

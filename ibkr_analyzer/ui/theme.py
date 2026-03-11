@@ -145,6 +145,25 @@ _CSS_PRESETS = {
 def inject_custom_css(theme_name: str = "slate_mint") -> None:
     theme = _CSS_PRESETS.get(theme_name, _CSS_PRESETS["slate_mint"])
     editorial_overrides = """
+            :root,
+            [data-testid="stAppViewContainer"],
+            .stApp {
+                --st-primary-color: #2f7f88;
+                --st-background-color: #efe6d8;
+                --st-secondary-background-color: #f7f1e7;
+                --st-text-color: #1b1814;
+                --st-link-color: #0f6d75;
+                --st-border-color: rgba(96, 84, 72, 0.18);
+                --st-widget-border-color: rgba(96, 84, 72, 0.22);
+                --st-gray-text-color: #6d655b;
+                --st-heading-color: #1b1814;
+                --st-dataframe-border-color: rgba(96, 84, 72, 0.18);
+                --st-dataframe-header-background-color: #e7dccd;
+                --st-code-background-color: #f1e8db;
+                --st-code-text-color: #1b1814;
+                color-scheme: light !important;
+            }
+
             .stApp {
                 background: #efe6d8 !important;
             }
@@ -176,34 +195,15 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             [data-testid="stHeader"] [role="button"] svg,
             button[kind="header"] svg {
                 color: inherit !important;
+                filter: brightness(0) saturate(100%) opacity(0.72) !important;
+                opacity: 1 !important;
             }
 
-            [data-testid="stHeader"] button svg path,
-            [data-testid="stHeader"] button svg polygon,
-            [data-testid="stHeader"] button svg rect,
-            [data-testid="stHeader"] button svg circle,
-            [data-testid="stHeader"] button svg line,
-            [data-testid="stHeader"] button svg polyline,
-            [data-testid="stHeader"] a svg path,
-            [data-testid="stHeader"] a svg polygon,
-            [data-testid="stHeader"] a svg rect,
-            [data-testid="stHeader"] a svg circle,
-            [data-testid="stHeader"] a svg line,
-            [data-testid="stHeader"] a svg polyline,
-            [data-testid="stHeader"] [role="button"] svg path,
-            [data-testid="stHeader"] [role="button"] svg polygon,
-            [data-testid="stHeader"] [role="button"] svg rect,
-            [data-testid="stHeader"] [role="button"] svg circle,
-            [data-testid="stHeader"] [role="button"] svg line,
-            [data-testid="stHeader"] [role="button"] svg polyline,
-            button[kind="header"] svg path,
-            button[kind="header"] svg polygon,
-            button[kind="header"] svg rect,
-            button[kind="header"] svg circle,
-            button[kind="header"] svg line,
-            button[kind="header"] svg polyline {
-                fill: currentColor !important;
-                stroke: currentColor !important;
+            [data-testid="stHeader"] button:hover svg,
+            [data-testid="stHeader"] a:hover svg,
+            [data-testid="stHeader"] [role="button"]:hover svg,
+            button[kind="header"]:hover svg {
+                filter: brightness(0) saturate(100%) opacity(0.92) !important;
             }
 
             .hero-card {
@@ -294,7 +294,7 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             section[data-testid="stSidebar"] button[aria-label="Help"],
             section[data-testid="stSidebar"] button[title="Help"],
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] {
-                color: #5b544b !important;
+                color: #2f7f88 !important;
                 opacity: 1 !important;
             }
 
@@ -337,7 +337,7 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             section[data-testid="stSidebar"] button[aria-label="Help"]:hover,
             section[data-testid="stSidebar"] button[title="Help"]:hover,
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover {
-                color: #1f1b17 !important;
+                color: #245f66 !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] *,
@@ -529,6 +529,50 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             .stMarkdown table thead th {
                 background: #e7dccd !important;
                 color: #2e2924 !important;
+            }
+
+            .editorial-table-shell {
+                max-height: 28rem;
+                overflow: auto;
+                border: 1px solid rgba(96, 84, 72, 0.18);
+                border-radius: 8px;
+                background: #f7f1e7;
+            }
+
+            .editorial-table-shell table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                background: #f7f1e7;
+                color: #1b1814;
+                font-size: 0.94rem;
+                line-height: 1.45;
+            }
+
+            .editorial-table-shell thead th {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                background: #e7dccd;
+                color: #2e2924;
+                font-weight: 700;
+            }
+
+            .editorial-table-shell th,
+            .editorial-table-shell td {
+                padding: 0.7rem 0.82rem;
+                border-bottom: 1px solid rgba(96, 84, 72, 0.14);
+                text-align: left;
+                vertical-align: top;
+                white-space: nowrap;
+            }
+
+            .editorial-table-shell tbody tr:nth-child(even) {
+                background: #f3ebdf;
+            }
+
+            .editorial-table-shell tbody tr:hover {
+                background: #efe1c8;
             }
 
             .js-plotly-plot .plotly .g-gtitle text,

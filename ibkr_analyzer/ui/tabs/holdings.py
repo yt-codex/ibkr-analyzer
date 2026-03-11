@@ -10,6 +10,7 @@ from ibkr_analyzer.report_utils import (
     to_numeric,
 )
 from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
+from ibkr_analyzer.ui.tables import render_dataframe
 
 
 def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
@@ -142,7 +143,7 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
             lambda value: "-" if pd.isna(value) else f"{value:,.4f}"
         )
         st.subheader("Largest Holdings")
-        st.dataframe(display_table, use_container_width=True, hide_index=True)
+        render_dataframe(display_table, use_container_width=True, hide_index=True)
 
     trade_summary = get_table(
         report,

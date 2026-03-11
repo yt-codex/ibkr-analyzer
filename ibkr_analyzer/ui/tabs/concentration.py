@@ -11,6 +11,7 @@ from ibkr_analyzer.report_utils import (
     to_numeric,
 )
 from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
+from ibkr_analyzer.ui.tables import render_dataframe
 
 
 def render_concentration_tab(report: ParsedIBKRReport) -> None:
@@ -189,7 +190,7 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
     stock_table["NetWeight"] = stock_table["NetWeight"].map(format_pct)
     stock_table["CumulativeCoverage"] = stock_table["CumulativeCoverage"].map(format_pct)
     st.subheader("Underlying Stock Weights")
-    st.dataframe(
+    render_dataframe(
         stock_table[["Symbol", "Description", "NetWeight", "CumulativeCoverage"]],
         use_container_width=True,
         hide_index=True,
