@@ -330,20 +330,43 @@ def build_report_summary_html(
     period_length_display: str,
     parsed_sections: int,
 ) -> str:
-    account_suffix = (
-        f" ({format_panel_value(account_id, default='')})"
-        if str(account_id).strip()
+    account_display = format_panel_value(account_name, default="Unknown")
+    account_id_display = format_panel_value(account_id, default="")
+    account_meta = (
+        f"<span class='summary-meta'>{account_id_display}</span>"
+        if account_id_display
         else ""
     )
     return f"""
-        <div class="panel">
-            <b>{format_panel_value(report_source)}</b><br/>
-            Account: <b>{format_panel_value(account_name, default="Unknown")}</b>{account_suffix}<br/>
-            Base Currency: <b>{format_panel_value(base_currency)}</b><br/>
-            Return Measure: <b>{format_panel_value(performance_measure)}</b><br/>
-            Analysis Period: <b>{format_panel_value(analysis_period)}</b><br/>
-            Period Length: <b>{format_panel_value(period_length_display)}</b><br/>
-            Parsed Sections: <b>{parsed_sections}</b>
+        <div class="summary-strip">
+            <div class="summary-item summary-item-primary">
+                <span class="summary-label">Report Source</span>
+                <span class="summary-value">{format_panel_value(report_source)}</span>
+                <span class="summary-meta">Live session analysis only</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Account</span>
+                <span class="summary-value">{account_display}</span>
+                {account_meta}
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Base Currency</span>
+                <span class="summary-value">{format_panel_value(base_currency)}</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Return Basis</span>
+                <span class="summary-value">{format_panel_value(performance_measure)}</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Analysis Period</span>
+                <span class="summary-value">{format_panel_value(analysis_period)}</span>
+                <span class="summary-meta">{format_panel_value(period_length_display)}</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Parsed Sections</span>
+                <span class="summary-value">{parsed_sections}</span>
+                <span class="summary-meta">Tables ready for exploration</span>
+            </div>
         </div>
         """
 

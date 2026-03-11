@@ -16,7 +16,8 @@ from ibkr_analyzer.report_utils import (
     to_numeric,
     value_or_zero,
 )
-from ibkr_analyzer.ui.constants import PLOTLY_TEMPLATE
+from ibkr_analyzer.ui.chrome import render_section_intro
+from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE
 
 
 def render_overview_tab(
@@ -36,6 +37,13 @@ def render_overview_tab(
     fees = parse_number(key_stats_row.get("Fees & Commissions"))
     method_label, method_tip = return_method_label_and_tooltip(performance_measure)
 
+    render_section_intro(
+        eyebrow="Executive View",
+        title="Portfolio Pulse",
+        subtitle="A fast read on capital growth, cash movement, and the positions carrying the most weight right now.",
+        badge=f"Return basis: {method_label}",
+    )
+
     metric_col_1, metric_col_2, metric_col_3 = st.columns(3)
     metric_col_1.metric("Ending NAV", format_money(ending_nav, base_currency))
     metric_col_2.metric(
@@ -49,7 +57,7 @@ def render_overview_tab(
         help=method_tip,
     )
 
-    st.caption(f"Return method: {method_label}")
+    st.caption(f"Return method: {method_label}. {method_tip}")
 
     metric_col_4, metric_col_5, metric_col_6, metric_col_7 = st.columns(4)
     metric_col_4.metric("MTM", format_money(mtm, base_currency))
@@ -87,17 +95,50 @@ def render_overview_tab(
                     y=nav_table["NAV"],
                     mode="lines",
                     fill="tozeroy",
-                    line={"color": "#28d5b5", "width": 2.8},
+                    fillcolor="rgba(122, 231, 199, 0.14)",
+                    line={"color": CHART_COLORS[0], "width": 3.0},
                     name="NAV",
+                    hovertemplate="%{x|%b %Y}<br>NAV: %{y:,.2f}<extra></extra>",
+                )
+            )
+            nav_fig.add_trace(
+                go.Scatter(
+                    x=[nav_table["DateParsed"].iloc[-1]],
+                    y=[nav_table["NAV"].iloc[-1]],
+                    mode="markers",
+                    marker={
+                        "size": 10,
+                        "color": CHART_COLORS[1],
+                        "line": {"width": 2, "color": "rgba(9,16,30,0.92)"},
+                    },
+                    name="Latest NAV",
+                    showlegend=False,
+                    hovertemplate="%{x|%b %Y}<br>Latest NAV: %{y:,.2f}<extra></extra>",
                 )
             )
             nav_fig.update_layout(
-                title="Portfolio NAV Over Time",
                 template=PLOTLY_TEMPLATE,
                 height=360,
-                margin={"l": 12, "r": 12, "t": 48, "b": 8},
+                margin={"l": 12, "r": 12, "t": 56, "b": 12},
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(8, 15, 29, 0.18)",
                 xaxis_title="Date",
                 yaxis_title=f"NAV ({base_currency})" if base_currency else "NAV",
+                hovermode="x unified",
+                legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
+                font={"color": "#dce8fb"},
+                title={"text": "Portfolio NAV Over Time", "x": 0, "xanchor": "left"},
+            )
+            nav_fig.update_xaxes(
+                showgrid=True,
+                gridcolor="rgba(138, 160, 199, 0.10)",
+                zeroline=False,
+                showline=False,
+            )
+            nav_fig.update_yaxes(
+                showgrid=True,
+                gridcolor="rgba(138, 160, 199, 0.10)",
+                zeroline=False,
             )
             st.plotly_chart(nav_fig, use_container_width=True)
 
@@ -141,17 +182,25 @@ def render_overview_tab(
                 y=waterfall_values,
                 measure=waterfall_measure,
                 connector={"line": {"color": "rgba(180,194,220,0.4)"}},
-                increasing={"marker": {"color": "#28d5b5"}},
-                decreasing={"marker": {"color": "#ff5f8f"}},
-                totals={"marker": {"color": "#5ca3ff"}},
+                increasing={"marker": {"color": CHART_COLORS[0]}},
+                decreasing={"marker": {"color": CHART_COLORS[3]}},
+                totals={"marker": {"color": CHART_COLORS[1]}},
             )
         )
         nav_bridge.update_layout(
-            title="NAV Change Bridge",
             template=PLOTLY_TEMPLATE,
             height=360,
-            margin={"l": 8, "r": 8, "t": 48, "b": 8},
+            margin={"l": 8, "r": 8, "t": 56, "b": 12},
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(8, 15, 29, 0.18)",
             yaxis_title=f"Amount ({base_currency})" if base_currency else "Amount",
+            font={"color": "#dce8fb"},
+            title={"text": "NAV Change Bridge", "x": 0, "xanchor": "left"},
+        )
+        nav_bridge.update_yaxes(
+            showgrid=True,
+            gridcolor="rgba(138, 160, 199, 0.10)",
+            zeroline=False,
         )
         st.plotly_chart(nav_bridge, use_container_width=True)
 
@@ -190,7 +239,7 @@ def render_overview_tab(
         y="Symbol",
         color="UnrealizedP&L",
         orientation="h",
-        color_continuous_scale=["#ff5f8f", "#5ca3ff", "#28d5b5"],
+        color_continuous_scale=[CHART_COLORS[3], CHART_COLORS[1], CHART_COLORS[0]],
         template=PLOTLY_TEMPLATE,
         title="Top Holdings by Market Value",
         labels={
@@ -200,7 +249,21 @@ def render_overview_tab(
     )
     top_fig.update_layout(
         height=390,
-        margin={"l": 8, "r": 8, "t": 46, "b": 8},
+        margin={"l": 8, "r": 8, "t": 56, "b": 12},
         coloraxis_showscale=False,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(8, 15, 29, 0.18)",
+        font={"color": "#dce8fb"},
+        title={"x": 0, "xanchor": "left"},
+    )
+    top_fig.update_xaxes(
+        showgrid=True,
+        gridcolor="rgba(138, 160, 199, 0.10)",
+        zeroline=False,
+    )
+    top_fig.update_yaxes(showgrid=False, zeroline=False)
+    top_fig.update_traces(
+        marker_line={"width": 1.2, "color": "rgba(12, 18, 32, 0.95)"},
+        hovertemplate="%{y}<br>Value: %{x:,.2f}<br>Unrealized P&L: %{marker.color:,.2f}<extra></extra>",
     )
     st.plotly_chart(top_fig, use_container_width=True)

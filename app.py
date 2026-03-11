@@ -38,11 +38,19 @@ def streamlit_app() -> None:
     st.markdown(
         """
         <div class="hero-card">
-            <div class="hero-title">IBKR Portfolio Analyzer</div>
-            <p class="hero-sub">
-                Upload an Interactive Brokers Portfolio Analyst CSV and get a full dashboard:
-                performance, holdings, cashflows, risk, ESG, and benchmark comparison.
-            </p>
+            <div class="hero-copy">
+                <div class="hero-eyebrow">Interactive Brokers Portfolio Analyst</div>
+                <div class="hero-title">IBKR Portfolio Analyzer</div>
+                <p class="hero-sub">
+                    Upload a Portfolio Analyst CSV and turn it into a boardroom-style view of
+                    performance, concentration, cashflows, benchmarks, and portfolio risk.
+                </p>
+            </div>
+            <div class="hero-badges">
+                <span class="hero-badge">In-memory session only</span>
+                <span class="hero-badge">Benchmark-aware dashboards</span>
+                <span class="hero-badge">Raw tables preserved</span>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,

@@ -1,3 +1,4 @@
+from .chrome import render_section_intro
 from .theme import inject_custom_css
 from .tabs import (
     render_cashflow_income_tab,
