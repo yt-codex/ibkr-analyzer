@@ -296,13 +296,14 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] {
                 color: #2f7f88 !important;
                 opacity: 1 !important;
+                background: transparent !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg,
             section[data-testid="stSidebar"] button[aria-label="Help"] svg,
             section[data-testid="stSidebar"] button[title="Help"] svg,
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg {
-                color: inherit !important;
+                color: #2f7f88 !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg circle,
@@ -310,7 +311,7 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             section[data-testid="stSidebar"] button[title="Help"] svg circle,
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg circle {
                 fill: transparent !important;
-                stroke: currentColor !important;
+                stroke: #2f7f88 !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg path,
@@ -329,8 +330,8 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg line,
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg polyline,
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg polygon {
-                fill: currentColor !important;
-                stroke: currentColor !important;
+                fill: #2f7f88 !important;
+                stroke: #2f7f88 !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover,
@@ -338,6 +339,40 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             section[data-testid="stSidebar"] button[title="Help"]:hover,
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover {
                 color: #245f66 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover svg,
+            section[data-testid="stSidebar"] button[aria-label="Help"]:hover svg,
+            section[data-testid="stSidebar"] button[title="Help"]:hover svg,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover svg {
+                color: #245f66 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover svg circle,
+            section[data-testid="stSidebar"] button[aria-label="Help"]:hover svg circle,
+            section[data-testid="stSidebar"] button[title="Help"]:hover svg circle,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover svg circle {
+                stroke: #245f66 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover svg path,
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover svg line,
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover svg polyline,
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover svg polygon,
+            section[data-testid="stSidebar"] button[aria-label="Help"]:hover svg path,
+            section[data-testid="stSidebar"] button[aria-label="Help"]:hover svg line,
+            section[data-testid="stSidebar"] button[aria-label="Help"]:hover svg polyline,
+            section[data-testid="stSidebar"] button[aria-label="Help"]:hover svg polygon,
+            section[data-testid="stSidebar"] button[title="Help"]:hover svg path,
+            section[data-testid="stSidebar"] button[title="Help"]:hover svg line,
+            section[data-testid="stSidebar"] button[title="Help"]:hover svg polyline,
+            section[data-testid="stSidebar"] button[title="Help"]:hover svg polygon,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover svg path,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover svg line,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover svg polyline,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover svg polygon {
+                fill: #245f66 !important;
+                stroke: #245f66 !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] *,
