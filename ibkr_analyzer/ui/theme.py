@@ -241,11 +241,27 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 color: #1f1b17 !important;
             }
 
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg,
+            section[data-testid="stSidebar"] button[aria-label="Help"] svg,
+            section[data-testid="stSidebar"] button[title="Help"] svg,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg {
+                fill: #5b544b !important;
+                stroke: #5b544b !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover svg,
+            section[data-testid="stSidebar"] button[aria-label="Help"]:hover svg,
+            section[data-testid="stSidebar"] button[title="Help"]:hover svg,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover svg {
+                fill: #1f1b17 !important;
+                stroke: #1f1b17 !important;
+            }
+
             section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] *,
             section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] small,
             section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] span,
             section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] div {
-                color: #49423a !important;
+                color: #3b352f !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stFileUploaderFileName"],
@@ -329,6 +345,29 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 color: #f7f1e7;
             }
 
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button,
+            section[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"] {
+                background: #2f7f88 !important;
+                border: 1px solid #2f7f88 !important;
+                color: #f7f1e7 !important;
+                box-shadow: none !important;
+                font-weight: 700 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button:hover,
+            section[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"]:hover {
+                background: #245f66 !important;
+                border-color: #245f66 !important;
+                color: #fffaf2 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button p,
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button span,
+            section[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"] p,
+            section[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"] span {
+                color: #f7f1e7 !important;
+            }
+
             div[data-testid="stMetricValue"] {
                 font-size: 1.7rem;
             }
@@ -354,15 +393,25 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
 
             .js-plotly-plot .modebar {
                 opacity: 1 !important;
-                background: rgba(247, 241, 231, 0.96) !important;
-                border: 1px solid rgba(96, 84, 72, 0.14);
+                background: rgba(246, 239, 230, 0.98) !important;
+                border: 1px solid rgba(96, 84, 72, 0.22);
+                border-radius: 6px !important;
+            }
+
+            .js-plotly-plot .modebar-group {
+                background: transparent !important;
+            }
+
+            .js-plotly-plot .modebar-btn {
+                opacity: 1 !important;
             }
 
             .js-plotly-plot .modebar-btn svg path,
             .js-plotly-plot .modebar-btn svg polygon,
             .js-plotly-plot .modebar-btn svg rect,
             .js-plotly-plot .modebar-btn svg circle {
-                fill: #5b544b !important;
+                fill: #4d4741 !important;
+                stroke: #4d4741 !important;
             }
 
             .js-plotly-plot .modebar-btn:hover svg path,
@@ -370,6 +419,7 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             .js-plotly-plot .modebar-btn:hover svg rect,
             .js-plotly-plot .modebar-btn:hover svg circle {
                 fill: #1f1b17 !important;
+                stroke: #1f1b17 !important;
             }
 
             [data-testid="stFileUploaderDropzone"] {
