@@ -157,6 +157,55 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 background: rgba(239, 230, 216, 0.92);
             }
 
+            [data-testid="stHeader"] button,
+            [data-testid="stHeader"] a,
+            [data-testid="stHeader"] [role="button"],
+            button[kind="header"] {
+                color: #4c443b !important;
+            }
+
+            [data-testid="stHeader"] button:hover,
+            [data-testid="stHeader"] a:hover,
+            [data-testid="stHeader"] [role="button"]:hover,
+            button[kind="header"]:hover {
+                color: #1f1b17 !important;
+            }
+
+            [data-testid="stHeader"] button svg,
+            [data-testid="stHeader"] a svg,
+            [data-testid="stHeader"] [role="button"] svg,
+            button[kind="header"] svg {
+                color: inherit !important;
+            }
+
+            [data-testid="stHeader"] button svg path,
+            [data-testid="stHeader"] button svg polygon,
+            [data-testid="stHeader"] button svg rect,
+            [data-testid="stHeader"] button svg circle,
+            [data-testid="stHeader"] button svg line,
+            [data-testid="stHeader"] button svg polyline,
+            [data-testid="stHeader"] a svg path,
+            [data-testid="stHeader"] a svg polygon,
+            [data-testid="stHeader"] a svg rect,
+            [data-testid="stHeader"] a svg circle,
+            [data-testid="stHeader"] a svg line,
+            [data-testid="stHeader"] a svg polyline,
+            [data-testid="stHeader"] [role="button"] svg path,
+            [data-testid="stHeader"] [role="button"] svg polygon,
+            [data-testid="stHeader"] [role="button"] svg rect,
+            [data-testid="stHeader"] [role="button"] svg circle,
+            [data-testid="stHeader"] [role="button"] svg line,
+            [data-testid="stHeader"] [role="button"] svg polyline,
+            button[kind="header"] svg path,
+            button[kind="header"] svg polygon,
+            button[kind="header"] svg rect,
+            button[kind="header"] svg circle,
+            button[kind="header"] svg line,
+            button[kind="header"] svg polyline {
+                fill: currentColor !important;
+                stroke: currentColor !important;
+            }
+
             .hero-card {
                 display: block;
                 gap: 1.1rem;
@@ -254,6 +303,34 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             section[data-testid="stSidebar"] button[title="Help"] svg,
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg {
                 color: inherit !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg circle,
+            section[data-testid="stSidebar"] button[aria-label="Help"] svg circle,
+            section[data-testid="stSidebar"] button[title="Help"] svg circle,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg circle {
+                fill: transparent !important;
+                stroke: currentColor !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg path,
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg line,
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg polyline,
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg polygon,
+            section[data-testid="stSidebar"] button[aria-label="Help"] svg path,
+            section[data-testid="stSidebar"] button[aria-label="Help"] svg line,
+            section[data-testid="stSidebar"] button[aria-label="Help"] svg polyline,
+            section[data-testid="stSidebar"] button[aria-label="Help"] svg polygon,
+            section[data-testid="stSidebar"] button[title="Help"] svg path,
+            section[data-testid="stSidebar"] button[title="Help"] svg line,
+            section[data-testid="stSidebar"] button[title="Help"] svg polyline,
+            section[data-testid="stSidebar"] button[title="Help"] svg polygon,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg path,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg line,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg polyline,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg polygon {
+                fill: currentColor !important;
+                stroke: currentColor !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover,
@@ -383,8 +460,75 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             }
 
             div[data-testid="stPlotlyChart"],
-            div[data-testid="stDataFrame"] {
+            div[data-testid="stDataFrame"],
+            div[data-testid="stDataEditor"],
+            div[data-testid="stTable"] {
                 background: #f7f1e7;
+            }
+
+            div[data-testid="stDataFrame"],
+            div[data-testid="stDataEditor"] {
+                --gdg-bg-cell: #f7f1e7;
+                --gdg-bg-cell-medium: #efe6d8;
+                --gdg-bg-header: #e7dccd;
+                --gdg-bg-header-has-focus: #ddd1bf;
+                --gdg-bg-header-hovered: #e3d7c7;
+                --gdg-bg-bubble: #efe1c8;
+                --gdg-bg-bubble-selected: #e7dccd;
+                --gdg-bg-search-result: #efe1c8;
+                --gdg-border-color: rgba(96, 84, 72, 0.18);
+                --gdg-horizontal-border-color: rgba(96, 84, 72, 0.12);
+                --gdg-drilldown-border: rgba(96, 84, 72, 0.18);
+                --gdg-link-color: #0f6d75;
+                --gdg-text-dark: #1b1814;
+                --gdg-text-medium: #464039;
+                --gdg-text-light: #6d655b;
+                --gdg-text-bubble: #1b1814;
+                --gdg-text-header: #2e2924;
+                --gdg-text-group-header: #5b544b;
+                --gdg-text-header-selected: #1b1814;
+                --gdg-icon-header: #5b544b;
+                --gdg-accent-color: #0f6d75;
+                --gdg-accent-fg: #ffffff;
+                --gdg-selection-fill: rgba(15, 109, 117, 0.12);
+                --gdg-selection-color: rgba(15, 109, 117, 0.18);
+                --gdg-header-font-style: 600 0.86rem "Libre Franklin", "Segoe UI", sans-serif;
+                --gdg-base-font-style: 500 0.9rem "Libre Franklin", "Segoe UI", sans-serif;
+                color: #1b1814 !important;
+            }
+
+            div[data-testid="stDataFrame"] [role="grid"],
+            div[data-testid="stDataEditor"] [role="grid"],
+            div[data-testid="stDataFrame"] canvas,
+            div[data-testid="stDataEditor"] canvas {
+                background: #f7f1e7 !important;
+            }
+
+            div[data-testid="stTable"],
+            div[data-testid="stTable"] table,
+            div[data-testid="stTable"] thead tr,
+            div[data-testid="stTable"] tbody tr,
+            .stMarkdown table,
+            .stMarkdown thead tr,
+            .stMarkdown tbody tr {
+                background: #f7f1e7 !important;
+                color: #1b1814 !important;
+                border-color: rgba(96, 84, 72, 0.18) !important;
+            }
+
+            div[data-testid="stTable"] th,
+            div[data-testid="stTable"] td,
+            .stMarkdown table th,
+            .stMarkdown table td {
+                background: #f7f1e7 !important;
+                color: #1b1814 !important;
+                border-color: rgba(96, 84, 72, 0.18) !important;
+            }
+
+            div[data-testid="stTable"] thead th,
+            .stMarkdown table thead th {
+                background: #e7dccd !important;
+                color: #2e2924 !important;
             }
 
             .js-plotly-plot .plotly .g-gtitle text,
