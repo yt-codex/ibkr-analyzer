@@ -176,13 +176,20 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 background: rgba(239, 230, 216, 0.92);
             }
 
+            [data-testid="stHeader"] [data-testid="stToolbar"] button,
+            [data-testid="stHeader"] [data-testid="stToolbar"] a,
+            [data-testid="stHeader"] [data-testid="stToolbar"] [role="button"],
             [data-testid="stHeader"] button,
             [data-testid="stHeader"] a,
             [data-testid="stHeader"] [role="button"],
             button[kind="header"] {
                 color: #4c443b !important;
+                background: transparent !important;
             }
 
+            [data-testid="stHeader"] [data-testid="stToolbar"] button:hover,
+            [data-testid="stHeader"] [data-testid="stToolbar"] a:hover,
+            [data-testid="stHeader"] [data-testid="stToolbar"] [role="button"]:hover,
             [data-testid="stHeader"] button:hover,
             [data-testid="stHeader"] a:hover,
             [data-testid="stHeader"] [role="button"]:hover,
@@ -190,20 +197,28 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 color: #1f1b17 !important;
             }
 
+            [data-testid="stHeader"] [data-testid="stToolbar"] svg,
             [data-testid="stHeader"] button svg,
             [data-testid="stHeader"] a svg,
             [data-testid="stHeader"] [role="button"] svg,
             button[kind="header"] svg {
-                color: inherit !important;
-                filter: brightness(0) saturate(100%) opacity(0.72) !important;
+                color: currentColor !important;
+                fill: currentColor !important;
+                stroke: currentColor !important;
+                filter: none !important;
                 opacity: 1 !important;
             }
 
+            [data-testid="stHeader"] [data-testid="stToolbar"] button:hover svg,
+            [data-testid="stHeader"] [data-testid="stToolbar"] a:hover svg,
+            [data-testid="stHeader"] [data-testid="stToolbar"] [role="button"]:hover svg,
             [data-testid="stHeader"] button:hover svg,
             [data-testid="stHeader"] a:hover svg,
             [data-testid="stHeader"] [role="button"]:hover svg,
             button[kind="header"]:hover svg {
-                filter: brightness(0) saturate(100%) opacity(0.92) !important;
+                color: currentColor !important;
+                fill: currentColor !important;
+                stroke: currentColor !important;
             }
 
             .hero-card {

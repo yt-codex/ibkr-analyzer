@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import hashlib
-from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -80,14 +79,6 @@ def streamlit_app() -> None:
             help="Your file is processed in memory during this session only.",
         )
 
-        sample_files = sorted(Path("data").glob("*.csv"))
-        use_sample = st.checkbox(
-            "Use bundled sample report",
-            value=False,
-            disabled=not bool(sample_files),
-            help="Useful for testing the app before uploading your own report.",
-        )
-
         st.markdown(
             """
             <div class="panel">
@@ -113,16 +104,12 @@ def streamlit_app() -> None:
     report_bytes: bytes | None = None
     report_source = ""
 
-    if use_sample and sample_files:
-        sample_path = sample_files[0]
-        report_bytes = sample_path.read_bytes()
-        report_source = f"Sample report: {sample_path.name}"
-    elif uploaded_file is not None:
+    if uploaded_file is not None:
         report_bytes = uploaded_file.getvalue()
         report_source = f"Uploaded report: {uploaded_file.name}"
 
     if report_bytes is None:
-        st.info("Upload your IBKR CSV report (or enable the sample file) to start analysis.")
+        st.info("Upload your IBKR CSV report to start analysis.")
         return
 
     try:
