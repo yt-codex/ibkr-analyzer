@@ -122,7 +122,15 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
             texttemplate="%{label}<br>%{percent:.2%}",
             hovertemplate="%{label}<br>%{value:.2f}%<extra></extra>",
         )
-        donut_fig.update_layout(height=390, margin={"l": 8, "r": 8, "t": 48, "b": 8})
+        donut_fig.update_layout(
+            height=390,
+            margin={"l": 8, "r": 8, "t": 48, "b": 8},
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor=str(chart_theme["plot_bg"]),
+            font={"color": str(chart_theme["font_color"])},
+            title={"x": 0, "xanchor": "left"},
+        )
+        donut_fig.update_traces(marker_line={"width": 1.2, "color": str(chart_theme["marker_line"])})
         st.plotly_chart(donut_fig, use_container_width=True)
 
     with concentration_col_2:
@@ -160,9 +168,16 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
             margin={"l": 8, "r": 8, "t": 48, "b": 8},
             coloraxis_showscale=False,
             yaxis_range=[0, 100],
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor=str(chart_theme["plot_bg"]),
+            font={"color": str(chart_theme["font_color"])},
+            title={"x": 0, "xanchor": "left"},
         )
+        coverage_fig.update_xaxes(showgrid=False, zeroline=False)
+        coverage_fig.update_yaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
         coverage_fig.update_traces(
             textposition="outside",
+            marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])},
             hovertemplate="%{x}<br>%{y:.2f}%<extra></extra>",
         )
         st.plotly_chart(coverage_fig, use_container_width=True)

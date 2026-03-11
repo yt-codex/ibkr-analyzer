@@ -241,20 +241,26 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 color: #1f1b17 !important;
             }
 
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"],
+            section[data-testid="stSidebar"] button[aria-label="Help"],
+            section[data-testid="stSidebar"] button[title="Help"],
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] {
+                color: #5b544b !important;
+                opacity: 1 !important;
+            }
+
             section[data-testid="stSidebar"] [data-testid="stTooltipIcon"] svg,
             section[data-testid="stSidebar"] button[aria-label="Help"] svg,
             section[data-testid="stSidebar"] button[title="Help"] svg,
             section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"] svg {
-                fill: #5b544b !important;
-                stroke: #5b544b !important;
+                color: inherit !important;
             }
 
-            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover svg,
-            section[data-testid="stSidebar"] button[aria-label="Help"]:hover svg,
-            section[data-testid="stSidebar"] button[title="Help"]:hover svg,
-            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover svg {
-                fill: #1f1b17 !important;
-                stroke: #1f1b17 !important;
+            section[data-testid="stSidebar"] [data-testid="stTooltipIcon"]:hover,
+            section[data-testid="stSidebar"] button[aria-label="Help"]:hover,
+            section[data-testid="stSidebar"] button[title="Help"]:hover,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabelHelp"]:hover {
+                color: #1f1b17 !important;
             }
 
             section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] *,
@@ -420,6 +426,19 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             .js-plotly-plot .modebar-btn:hover svg circle {
                 fill: #1f1b17 !important;
                 stroke: #1f1b17 !important;
+            }
+
+            div[data-baseweb="tooltip"],
+            [role="tooltip"] {
+                background: #1f2328 !important;
+                color: #f7f1e7 !important;
+                border: 1px solid rgba(31, 35, 40, 0.18);
+                box-shadow: none !important;
+            }
+
+            div[data-baseweb="tooltip"] *,
+            [role="tooltip"] * {
+                color: #f7f1e7 !important;
             }
 
             [data-testid="stFileUploaderDropzone"] {

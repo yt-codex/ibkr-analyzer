@@ -107,7 +107,14 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
                 height=340,
                 margin={"l": 12, "r": 12, "t": 46, "b": 8},
                 coloraxis_showscale=False,
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor=str(chart_theme["plot_bg"]),
+                font={"color": str(chart_theme["font_color"])},
+                title={"x": 0, "xanchor": "left"},
             )
+            cf_fig.update_xaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+            cf_fig.update_yaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+            cf_fig.update_traces(marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])})
             st.plotly_chart(cf_fig, use_container_width=True)
 
     with chart_col_2:
@@ -132,7 +139,14 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
             height=340,
             margin={"l": 12, "r": 12, "t": 46, "b": 8},
             showlegend=False,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor=str(chart_theme["plot_bg"]),
+            font={"color": str(chart_theme["font_color"])},
+            title={"x": 0, "xanchor": "left"},
         )
+        income_fig.update_xaxes(showgrid=False, zeroline=False)
+        income_fig.update_yaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+        income_fig.update_traces(marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])})
         st.plotly_chart(income_fig, use_container_width=True)
 
     if not dividends.empty:
@@ -152,7 +166,16 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
             },
         )
         dividend_fig.update_traces(line={"color": CHART_COLORS[0], "width": 2.2})
-        dividend_fig.update_layout(height=320, margin={"l": 12, "r": 12, "t": 46, "b": 8})
+        dividend_fig.update_layout(
+            height=320,
+            margin={"l": 12, "r": 12, "t": 46, "b": 8},
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor=str(chart_theme["plot_bg"]),
+            font={"color": str(chart_theme["font_color"])},
+            title={"x": 0, "xanchor": "left"},
+        )
+        dividend_fig.update_xaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+        dividend_fig.update_yaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
         st.plotly_chart(dividend_fig, use_container_width=True)
 
     if not projected_income.empty:

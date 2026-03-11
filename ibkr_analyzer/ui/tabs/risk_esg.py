@@ -98,7 +98,17 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
                 color_discrete_sequence=CHART_COLORS,
                 title="Risk Measure Comparison",
             )
-            risk_bar.update_layout(height=360, margin={"l": 12, "r": 12, "t": 48, "b": 8})
+            risk_bar.update_layout(
+                height=360,
+                margin={"l": 12, "r": 12, "t": 48, "b": 8},
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor=str(chart_theme["plot_bg"]),
+                font={"color": str(chart_theme["font_color"])},
+                title={"x": 0, "xanchor": "left"},
+            )
+            risk_bar.update_xaxes(showgrid=False, zeroline=False)
+            risk_bar.update_yaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+            risk_bar.update_traces(marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])})
             st.plotly_chart(risk_bar, use_container_width=True)
 
         st.subheader("Absolute Risk Measures")
@@ -143,7 +153,14 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
                 height=320,
                 margin={"l": 12, "r": 12, "t": 46, "b": 8},
                 showlegend=False,
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor=str(chart_theme["plot_bg"]),
+                font={"color": str(chart_theme["font_color"])},
+                title={"x": 0, "xanchor": "left"},
             )
+            esg_fig.update_xaxes(showgrid=False, zeroline=False)
+            esg_fig.update_yaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+            esg_fig.update_traces(marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])})
             st.plotly_chart(esg_fig, use_container_width=True)
 
     if not esg_holdings.empty:
@@ -169,7 +186,17 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
                 title="Weight vs ESG Score",
                 color_continuous_scale=list(chart_theme["risk_scale"]),
             )
-            scatter_fig.update_layout(height=340, margin={"l": 12, "r": 12, "t": 46, "b": 8})
+            scatter_fig.update_layout(
+                height=340,
+                margin={"l": 12, "r": 12, "t": 46, "b": 8},
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor=str(chart_theme["plot_bg"]),
+                font={"color": str(chart_theme["font_color"])},
+                title={"x": 0, "xanchor": "left"},
+            )
+            scatter_fig.update_xaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+            scatter_fig.update_yaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+            scatter_fig.update_traces(marker_line={"width": 1.0, "color": str(chart_theme["marker_line"])})
             st.plotly_chart(scatter_fig, use_container_width=True)
 
             table_view = esg_holdings[

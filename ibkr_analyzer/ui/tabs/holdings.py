@@ -84,8 +84,14 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
                 hole=0.52,
             )
             sector_fig.update_layout(
-                height=360, margin={"l": 8, "r": 8, "t": 48, "b": 8}
+                height=360,
+                margin={"l": 8, "r": 8, "t": 48, "b": 8},
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor=str(chart_theme["plot_bg"]),
+                font={"color": str(chart_theme["font_color"])},
+                title={"x": 0, "xanchor": "left"},
             )
+            sector_fig.update_traces(marker_line={"width": 1.2, "color": str(chart_theme["marker_line"])})
             st.plotly_chart(sector_fig, use_container_width=True)
 
     with composition_col_2:
@@ -104,7 +110,15 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
             color_discrete_sequence=CHART_COLORS,
             hole=0.52,
         )
-        currency_fig.update_layout(height=360, margin={"l": 8, "r": 8, "t": 48, "b": 8})
+        currency_fig.update_layout(
+            height=360,
+            margin={"l": 8, "r": 8, "t": 48, "b": 8},
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor=str(chart_theme["plot_bg"]),
+            font={"color": str(chart_theme["font_color"])},
+            title={"x": 0, "xanchor": "left"},
+        )
+        currency_fig.update_traces(marker_line={"width": 1.2, "color": str(chart_theme["marker_line"])})
         st.plotly_chart(currency_fig, use_container_width=True)
 
     top_positions = non_cash_positions.nlargest(12, "Value").copy()
@@ -172,5 +186,12 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
             height=340,
             margin={"l": 8, "r": 8, "t": 44, "b": 8},
             coloraxis_showscale=False,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor=str(chart_theme["plot_bg"]),
+            font={"color": str(chart_theme["font_color"])},
+            title={"x": 0, "xanchor": "left"},
         )
+        traded_fig.update_xaxes(showgrid=True, gridcolor=str(chart_theme["grid_color"]), zeroline=False)
+        traded_fig.update_yaxes(showgrid=False, zeroline=False)
+        traded_fig.update_traces(marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])})
         st.plotly_chart(traded_fig, use_container_width=True)
