@@ -9,10 +9,10 @@ def inject_custom_css() -> None:
 
             :root {
                 --bg-1: #071018;
-                --bg-2: #0f1b2d;
+                --bg-2: #0d1724;
                 --bg-3: #15243a;
-                --panel-bg: rgba(15, 27, 45, 0.78);
-                --panel-bg-strong: rgba(21, 36, 58, 0.92);
+                --panel-bg: rgba(15, 27, 45, 0.9);
+                --panel-bg-strong: rgba(21, 36, 58, 0.96);
                 --panel-border: rgba(159, 176, 199, 0.18);
                 --panel-border-strong: rgba(159, 176, 199, 0.28);
                 --text-main: #f3f7ff;
@@ -33,8 +33,9 @@ def inject_custom_css() -> None:
 
             .stApp {
                 background:
-                    radial-gradient(circle at 14% 14%, rgba(99, 230, 190, 0.12), transparent 32%),
-                    radial-gradient(circle at 86% 10%, rgba(124, 184, 255, 0.14), transparent 34%),
+                    radial-gradient(circle at 14% 14%, rgba(99, 230, 190, 0.18), transparent 28%),
+                    radial-gradient(circle at 84% 10%, rgba(255, 180, 84, 0.14), transparent 30%),
+                    radial-gradient(circle at 55% 100%, rgba(124, 184, 255, 0.08), transparent 26%),
                     linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 48%, var(--bg-3) 100%);
                 color: var(--text-main);
             }
@@ -46,7 +47,10 @@ def inject_custom_css() -> None:
             }
 
             section[data-testid="stSidebar"] > div {
-                background: linear-gradient(180deg, rgba(15, 27, 45, 0.98) 0%, rgba(21, 36, 58, 0.94) 100%);
+                background:
+                    radial-gradient(circle at 0% 0%, rgba(99, 230, 190, 0.08), transparent 26%),
+                    radial-gradient(circle at 100% 100%, rgba(255, 180, 84, 0.06), transparent 28%),
+                    linear-gradient(180deg, rgba(15, 27, 45, 0.99) 0%, rgba(18, 31, 48, 0.97) 100%);
                 border-right: 1px solid rgba(159, 176, 199, 0.12);
             }
 
@@ -74,8 +78,8 @@ def inject_custom_css() -> None:
                 border-radius: 24px;
                 border: 1px solid var(--panel-border-strong);
                 background:
-                    linear-gradient(135deg, rgba(99, 230, 190, 0.12), rgba(124, 184, 255, 0.12) 48%, rgba(255, 180, 84, 0.08)),
-                    linear-gradient(180deg, rgba(15, 27, 45, 0.98), rgba(21, 36, 58, 0.94));
+                    linear-gradient(135deg, rgba(99, 230, 190, 0.16), rgba(124, 184, 255, 0.08) 38%, rgba(255, 180, 84, 0.16)),
+                    linear-gradient(180deg, rgba(15, 27, 45, 0.99), rgba(21, 36, 58, 0.96));
                 box-shadow: var(--shadow-strong);
             }
 
@@ -89,13 +93,13 @@ def inject_custom_css() -> None:
                 margin-bottom: 0.55rem;
                 padding: 0.28rem 0.62rem;
                 border-radius: 999px;
-                border: 1px solid rgba(159, 176, 199, 0.22);
-                background: rgba(7, 16, 24, 0.32);
+                border: 1px solid rgba(99, 230, 190, 0.3);
+                background: rgba(99, 230, 190, 0.12);
                 font-size: 0.72rem;
                 font-weight: 800;
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
-                color: #dbfff5;
+                color: #dcfff4;
             }
 
             .hero-title {
@@ -124,11 +128,22 @@ def inject_custom_css() -> None:
             .hero-badge {
                 padding: 0.48rem 0.72rem;
                 border-radius: 999px;
-                border: 1px solid rgba(159, 176, 199, 0.18);
-                background: rgba(7, 16, 24, 0.38);
+                border: 1px solid rgba(99, 230, 190, 0.18);
+                background: rgba(99, 230, 190, 0.08);
                 font-size: 0.79rem;
                 font-weight: 700;
                 color: #edf4fc;
+            }
+
+            .hero-badge:nth-child(2) {
+                border-color: rgba(124, 184, 255, 0.2);
+                background: rgba(124, 184, 255, 0.1);
+            }
+
+            .hero-badge:nth-child(3) {
+                border-color: rgba(255, 180, 84, 0.24);
+                background: rgba(255, 180, 84, 0.1);
+                color: #fff2dd;
             }
 
             .panel {
@@ -195,7 +210,7 @@ def inject_custom_css() -> None:
                 padding: 0.95rem 1rem;
                 border-radius: 18px;
                 border: 1px solid rgba(159, 176, 199, 0.14);
-                background: linear-gradient(90deg, rgba(99, 230, 190, 0.08), rgba(124, 184, 255, 0.05) 44%, transparent 100%);
+                background: linear-gradient(90deg, rgba(99, 230, 190, 0.1), rgba(255, 180, 84, 0.05) 44%, transparent 100%);
             }
 
             .section-eyebrow {
@@ -242,6 +257,18 @@ def inject_custom_css() -> None:
                 box-shadow: var(--shadow-soft);
             }
 
+            div[data-testid="stMetric"]:nth-of-type(3n + 1) {
+                box-shadow: inset 0 1px 0 rgba(99, 230, 190, 0.22), var(--shadow-soft);
+            }
+
+            div[data-testid="stMetric"]:nth-of-type(3n + 2) {
+                box-shadow: inset 0 1px 0 rgba(124, 184, 255, 0.18), var(--shadow-soft);
+            }
+
+            div[data-testid="stMetric"]:nth-of-type(3n) {
+                box-shadow: inset 0 1px 0 rgba(255, 180, 84, 0.22), var(--shadow-soft);
+            }
+
             div[data-testid="stMetricLabel"] {
                 color: var(--text-soft);
                 font-weight: 600;
@@ -278,9 +305,9 @@ def inject_custom_css() -> None:
             }
 
             div[data-testid="stTabs"] [aria-selected="true"] {
-                background: linear-gradient(135deg, rgba(99, 230, 190, 0.16), rgba(124, 184, 255, 0.16));
+                background: linear-gradient(135deg, rgba(99, 230, 190, 0.2), rgba(255, 180, 84, 0.16));
                 color: var(--text-main);
-                box-shadow: inset 0 0 0 1px rgba(159, 176, 199, 0.2);
+                box-shadow: inset 0 0 0 1px rgba(99, 230, 190, 0.18);
             }
 
             div[data-testid="stPlotlyChart"],
@@ -294,12 +321,42 @@ def inject_custom_css() -> None:
 
             [data-testid="stFileUploaderDropzone"] {
                 border-radius: 18px;
-                border: 1px dashed rgba(159, 176, 199, 0.28);
-                background: rgba(15, 27, 45, 0.52);
+                border: 1px dashed rgba(99, 230, 190, 0.34);
+                background:
+                    linear-gradient(180deg, rgba(99, 230, 190, 0.08), rgba(255, 180, 84, 0.04)),
+                    rgba(15, 27, 45, 0.56);
             }
 
             [data-testid="stFileUploaderDropzone"] * {
                 color: var(--text-soft);
+            }
+
+            .stButton > button,
+            button[kind="secondary"],
+            [data-testid="stBaseButton-secondary"] {
+                border-radius: 12px;
+                border: 1px solid rgba(99, 230, 190, 0.26);
+                background: linear-gradient(135deg, rgba(99, 230, 190, 0.18), rgba(255, 180, 84, 0.16));
+                color: #f3f7fb;
+                font-weight: 700;
+                box-shadow: var(--shadow-soft);
+            }
+
+            [data-testid="stAlert"],
+            div[data-baseweb="notification"] {
+                border-radius: 18px;
+                border: 1px solid rgba(255, 180, 84, 0.26);
+                background:
+                    linear-gradient(90deg, rgba(255, 180, 84, 0.14), rgba(99, 230, 190, 0.08)),
+                    rgba(15, 27, 45, 0.92);
+                box-shadow: var(--shadow-soft);
+            }
+
+            [data-testid="stAlert"] p,
+            [data-testid="stAlert"] div,
+            div[data-baseweb="notification"] p,
+            div[data-baseweb="notification"] div {
+                color: #f3f7fb;
             }
 
             .method-tip {
