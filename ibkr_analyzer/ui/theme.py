@@ -72,7 +72,7 @@ _CSS_PRESETS = {
         "hint_value_text": "#e6eef8",
     },
     "editorial": {
-        "body_font": '"Manrope", "Segoe UI", sans-serif',
+        "body_font": '"Libre Franklin", "Segoe UI", sans-serif',
         "heading_font": '"Fraunces", Georgia, serif',
         "bg_1": "#111214",
         "bg_2": "#17181b",
@@ -144,11 +144,173 @@ _CSS_PRESETS = {
 
 def inject_custom_css(theme_name: str = "slate_mint") -> None:
     theme = _CSS_PRESETS.get(theme_name, _CSS_PRESETS["slate_mint"])
+    editorial_overrides = """
+            .stApp {
+                background:
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 96px),
+                    radial-gradient(circle at 14% 14%, rgba(230, 161, 90, 0.12), transparent 24%),
+                    radial-gradient(circle at 84% 10%, rgba(138, 180, 248, 0.06), transparent 26%),
+                    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 42%, var(--bg-3) 100%);
+            }
+
+            .block-container {
+                max-width: 1320px;
+            }
+
+            .hero-card {
+                grid-template-columns: 1fr;
+                gap: 1.1rem;
+                padding: 1.75rem 1.65rem 1.45rem 1.65rem;
+                border-radius: 10px;
+                box-shadow: none;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero-card::after {
+                content: "";
+                position: absolute;
+                left: 1.65rem;
+                right: 1.65rem;
+                bottom: 0.85rem;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(230, 161, 90, 0.55), transparent);
+            }
+
+            .hero-copy {
+                max-width: 58rem;
+            }
+
+            .hero-eyebrow,
+            .hero-badge,
+            .section-badge,
+            .method-tip,
+            .hint-value {
+                border-radius: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+
+            .hero-title {
+                max-width: 13ch;
+                font-size: clamp(2.35rem, 4.8vw, 3.65rem);
+                line-height: 0.92;
+                letter-spacing: -0.04em;
+            }
+
+            .hero-sub {
+                max-width: 54rem;
+                font-size: 1.02rem;
+                line-height: 1.75;
+            }
+
+            .hero-badges {
+                justify-content: flex-start;
+                gap: 0.6rem;
+            }
+
+            .panel,
+            .summary-item,
+            div[data-testid="stMetric"],
+            div[data-testid="stPlotlyChart"],
+            div[data-testid="stDataFrame"],
+            [data-testid="stFileUploaderDropzone"],
+            [data-testid="stAlert"],
+            div[data-baseweb="notification"] {
+                border-radius: 8px;
+                box-shadow: none;
+            }
+
+            .summary-item {
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+                    var(--panel-bg);
+                border-top: 2px solid rgba(230, 161, 90, 0.45);
+            }
+
+            .summary-item:nth-child(3n + 2) {
+                border-top-color: rgba(138, 180, 248, 0.38);
+            }
+
+            .summary-item:nth-child(3n) {
+                border-top-color: rgba(242, 193, 78, 0.42);
+            }
+
+            .section-intro {
+                border-radius: 8px;
+                border-left: 3px solid var(--accent);
+                padding-left: 1.15rem;
+                background:
+                    linear-gradient(90deg, rgba(230, 161, 90, 0.08), transparent 55%),
+                    var(--panel-bg);
+            }
+
+            div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+                background: transparent;
+                border: none;
+                border-bottom: 1px solid rgba(185, 174, 161, 0.22);
+                border-radius: 0;
+                padding: 0 0 0.6rem 0;
+                gap: 1rem;
+            }
+
+            div[data-testid="stTabs"] [data-baseweb="tab"] {
+                padding: 0.15rem 0.05rem;
+                border-radius: 0;
+                background: transparent;
+                color: var(--text-muted);
+                font-size: 0.78rem;
+                position: relative;
+            }
+
+            div[data-testid="stTabs"] [aria-selected="true"] {
+                background: transparent;
+                color: var(--text-main);
+                box-shadow: none;
+            }
+
+            div[data-testid="stTabs"] [aria-selected="true"]::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: -0.68rem;
+                height: 2px;
+                background: linear-gradient(90deg, var(--accent), var(--accent-3));
+            }
+
+            section[data-testid="stSidebar"] > div {
+                border-right: 1px solid rgba(230, 161, 90, 0.18);
+            }
+
+            .stButton > button,
+            button[kind="secondary"],
+            [data-testid="stBaseButton-secondary"] {
+                border-radius: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+
+            div[data-testid="stMetricValue"] {
+                font-size: 1.7rem;
+            }
+
+            @media (max-width: 900px) {
+                .hero-card {
+                    grid-template-columns: 1fr;
+                    padding: 1.45rem 1.1rem 1.25rem 1.1rem;
+                }
+
+                .hero-title {
+                    max-width: none;
+                }
+            }
+    """ if theme_name == "editorial" else ""
 
     st.markdown(
         f"""
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Libre+Franklin:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
 
             :root {{
                 --bg-1: {theme["bg_1"]};
@@ -568,6 +730,7 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                     padding-bottom: 1.4rem;
                 }}
             }}
+            {editorial_overrides}
         </style>
         """,
         unsafe_allow_html=True,
