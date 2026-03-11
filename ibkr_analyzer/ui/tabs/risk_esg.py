@@ -10,10 +10,11 @@ from ibkr_analyzer.report_utils import (
     sanitize_total_rows,
     to_numeric,
 )
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE
+from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
 
 
 def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
+    chart_theme = get_chart_theme()
     risk_absolute = get_table(
         report,
         "Risk Measures Benchmark Comparison",
@@ -165,7 +166,7 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
                 color="Combined",
                 template=PLOTLY_TEMPLATE,
                 title="Weight vs ESG Score",
-                color_continuous_scale=["#ff6b6b", "#7cb8ff", "#63e6be"],
+                color_continuous_scale=list(chart_theme["risk_scale"]),
             )
             scatter_fig.update_layout(height=340, margin={"l": 12, "r": 12, "t": 46, "b": 8})
             st.plotly_chart(scatter_fig, use_container_width=True)

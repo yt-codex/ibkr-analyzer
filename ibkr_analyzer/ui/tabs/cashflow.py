@@ -14,10 +14,11 @@ from ibkr_analyzer.report_utils import (
     remaining_income_metric_label,
     to_numeric,
 )
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE
+from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
 
 
 def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> None:
+    chart_theme = get_chart_theme()
     cashflows = get_table(
         report,
         "Deposits And Withdrawals",
@@ -93,7 +94,7 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
                 x="Month",
                 y="Amount",
                 color="Amount",
-                color_continuous_scale=["#ff6b6b", "#9fb0c7", "#63e6be"],
+                color_continuous_scale=list(chart_theme["cashflow_scale"]),
                 template=PLOTLY_TEMPLATE,
                 title="Net Deposits / Withdrawals by Month",
                 labels={
@@ -149,7 +150,7 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
                 else "Cumulative",
             },
         )
-        dividend_fig.update_traces(line={"color": "#63e6be", "width": 2.2})
+        dividend_fig.update_traces(line={"color": CHART_COLORS[0], "width": 2.2})
         dividend_fig.update_layout(height=320, margin={"l": 12, "r": 12, "t": 46, "b": 8})
         st.plotly_chart(dividend_fig, use_container_width=True)
 

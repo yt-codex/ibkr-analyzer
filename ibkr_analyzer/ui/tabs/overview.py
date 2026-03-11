@@ -17,7 +17,7 @@ from ibkr_analyzer.report_utils import (
     value_or_zero,
 )
 from ibkr_analyzer.ui.chrome import render_section_intro
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE
+from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
 
 
 def render_overview_tab(
@@ -27,6 +27,7 @@ def render_overview_tab(
     analysis_years: float,
     performance_measure: str,
 ) -> None:
+    chart_theme = get_chart_theme()
     ending_nav = parse_number(key_stats_row.get("EndingNAV"))
     cumulative_return = parse_number(key_stats_row.get("CumulativeReturn"))
     annualized_return = annualize_return(cumulative_return, analysis_years)
@@ -95,7 +96,7 @@ def render_overview_tab(
                     y=nav_table["NAV"],
                     mode="lines",
                     fill="tozeroy",
-                    fillcolor="rgba(99, 230, 190, 0.14)",
+                    fillcolor=str(chart_theme["nav_fill"]),
                     line={"color": CHART_COLORS[0], "width": 3.0},
                     name="NAV",
                     hovertemplate="%{x|%b %Y}<br>NAV: %{y:,.2f}<extra></extra>",
@@ -109,7 +110,7 @@ def render_overview_tab(
                     marker={
                         "size": 10,
                         "color": CHART_COLORS[1],
-                        "line": {"width": 2, "color": "rgba(7, 16, 24, 0.92)"},
+                        "line": {"width": 2, "color": str(chart_theme["marker_line"])},
                     },
                     name="Latest NAV",
                     showlegend=False,
@@ -121,23 +122,23 @@ def render_overview_tab(
                 height=360,
                 margin={"l": 12, "r": 12, "t": 56, "b": 12},
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(15, 27, 45, 0.24)",
+                plot_bgcolor=str(chart_theme["plot_bg"]),
                 xaxis_title="Date",
                 yaxis_title=f"NAV ({base_currency})" if base_currency else "NAV",
                 hovermode="x unified",
                 legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
-                font={"color": "#f3f7fb"},
+                font={"color": str(chart_theme["font_color"])},
                 title={"text": "Portfolio NAV Over Time", "x": 0, "xanchor": "left"},
             )
             nav_fig.update_xaxes(
                 showgrid=True,
-                gridcolor="rgba(138, 160, 199, 0.10)",
+                gridcolor=str(chart_theme["grid_color"]),
                 zeroline=False,
                 showline=False,
             )
             nav_fig.update_yaxes(
                 showgrid=True,
-                gridcolor="rgba(138, 160, 199, 0.10)",
+                gridcolor=str(chart_theme["grid_color"]),
                 zeroline=False,
             )
             st.plotly_chart(nav_fig, use_container_width=True)
@@ -192,14 +193,14 @@ def render_overview_tab(
             height=360,
             margin={"l": 8, "r": 8, "t": 56, "b": 12},
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(15, 27, 45, 0.24)",
+            plot_bgcolor=str(chart_theme["plot_bg"]),
             yaxis_title=f"Amount ({base_currency})" if base_currency else "Amount",
-            font={"color": "#f3f7fb"},
+            font={"color": str(chart_theme["font_color"])},
             title={"text": "NAV Change Bridge", "x": 0, "xanchor": "left"},
         )
         nav_bridge.update_yaxes(
             showgrid=True,
-            gridcolor="rgba(138, 160, 199, 0.10)",
+            gridcolor=str(chart_theme["grid_color"]),
             zeroline=False,
         )
         st.plotly_chart(nav_bridge, use_container_width=True)
@@ -239,7 +240,7 @@ def render_overview_tab(
         y="Symbol",
         color="UnrealizedP&L",
         orientation="h",
-        color_continuous_scale=[CHART_COLORS[3], "#9fb0c7", CHART_COLORS[0]],
+        color_continuous_scale=list(chart_theme["diverging_scale"]),
         template=PLOTLY_TEMPLATE,
         title="Top Holdings by Market Value",
         labels={
@@ -252,18 +253,18 @@ def render_overview_tab(
         margin={"l": 8, "r": 8, "t": 56, "b": 12},
         coloraxis_showscale=False,
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(15, 27, 45, 0.24)",
-        font={"color": "#f3f7fb"},
+        plot_bgcolor=str(chart_theme["plot_bg"]),
+        font={"color": str(chart_theme["font_color"])},
         title={"x": 0, "xanchor": "left"},
     )
     top_fig.update_xaxes(
         showgrid=True,
-        gridcolor="rgba(138, 160, 199, 0.10)",
+        gridcolor=str(chart_theme["grid_color"]),
         zeroline=False,
     )
     top_fig.update_yaxes(showgrid=False, zeroline=False)
     top_fig.update_traces(
-        marker_line={"width": 1.2, "color": "rgba(12, 18, 32, 0.95)"},
+        marker_line={"width": 1.2, "color": str(chart_theme["marker_line"])},
         hovertemplate="%{y}<br>Value: %{x:,.2f}<br>Unrealized P&L: %{marker.color:,.2f}<extra></extra>",
     )
     st.plotly_chart(top_fig, use_container_width=True)

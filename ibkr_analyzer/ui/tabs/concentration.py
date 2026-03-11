@@ -10,10 +10,11 @@ from ibkr_analyzer.report_utils import (
     sanitize_total_rows,
     to_numeric,
 )
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE
+from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
 
 
 def render_concentration_tab(report: ParsedIBKRReport) -> None:
+    chart_theme = get_chart_theme()
     concentration = get_table(
         report,
         "Concentration",
@@ -149,7 +150,7 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
             template=PLOTLY_TEMPLATE,
             title="Cumulative Coverage Milestones (Top 50 Max)",
             color="CoveragePct",
-            color_continuous_scale=["#9fb0c7", "#63e6be"],
+            color_continuous_scale=list(chart_theme["positive_scale"]),
             labels={"CoveragePct": "Cumulative coverage (%)", "Bucket": ""},
             text=coverage_df["CoveragePct"].map(lambda value: f"{value:.2f}%"),
         )

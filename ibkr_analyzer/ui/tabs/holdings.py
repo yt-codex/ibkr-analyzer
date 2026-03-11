@@ -9,10 +9,11 @@ from ibkr_analyzer.report_utils import (
     sanitize_total_rows,
     to_numeric,
 )
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE
+from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
 
 
 def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
+    chart_theme = get_chart_theme()
     positions = get_table(
         report,
         "Open Position Summary",
@@ -161,7 +162,7 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
             y="Symbol",
             orientation="h",
             color="NetInvested",
-            color_continuous_scale=["#7cb8ff", "#63e6be"],
+            color_continuous_scale=list(chart_theme["capital_scale"]),
             template=PLOTLY_TEMPLATE,
             title="Net Capital Deployed by Symbol (Base Currency)",
             labels={"NetInvested": "Net Invested", "Symbol": ""},

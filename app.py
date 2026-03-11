@@ -14,6 +14,7 @@ from ibkr_analyzer.report_utils import (
     parse_ibkr_report,
     period_years,
 )
+from ibkr_analyzer.ui.constants import set_active_theme
 from ibkr_analyzer.ui import (
     inject_custom_css,
     render_cashflow_income_tab,
@@ -33,7 +34,20 @@ def streamlit_app() -> None:
         layout="wide",
         initial_sidebar_state="expanded",
     )
-    inject_custom_css()
+
+    with st.sidebar:
+        st.markdown("### Appearance")
+        use_editorial_theme = st.toggle(
+            "Use editorial theme",
+            value=bool(st.session_state.get("use_editorial_theme", False)),
+            key="use_editorial_theme",
+            help="Switch to a warmer graphite-and-copper presentation with more editorial typography.",
+        )
+        st.caption("Default: Slate + Mint. Toggle on for Warm Graphite + Copper.")
+
+    theme_name = "editorial" if use_editorial_theme else "slate_mint"
+    set_active_theme(theme_name)
+    inject_custom_css(theme_name)
 
     st.markdown(
         """

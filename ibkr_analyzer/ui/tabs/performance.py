@@ -17,12 +17,13 @@ from ibkr_analyzer.report_utils import (
     to_numeric,
 )
 from ibkr_analyzer.ui.chrome import render_section_intro
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE
+from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
 
 
 def render_performance_tab(
     report: ParsedIBKRReport, account_hint: str, performance_measure: str
 ) -> None:
+    chart_theme = get_chart_theme()
     time_table = get_table(
         report,
         "Time Period Benchmark Comparison",
@@ -125,20 +126,20 @@ def render_performance_tab(
                 xaxis_title="Year",
                 legend_title_text="Series",
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(15, 27, 45, 0.24)",
+                plot_bgcolor=str(chart_theme["plot_bg"]),
                 hovermode="x unified",
-                font={"color": "#f3f7fb"},
+                font={"color": str(chart_theme["font_color"])},
                 title={"x": 0, "xanchor": "left"},
                 legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
             )
             perf_fig.update_xaxes(showgrid=False, zeroline=False)
             perf_fig.update_yaxes(
                 showgrid=True,
-                gridcolor="rgba(138, 160, 199, 0.10)",
+                gridcolor=str(chart_theme["grid_color"]),
                 zeroline=False,
             )
             perf_fig.update_traces(
-                marker_line={"width": 1.1, "color": "rgba(15, 27, 45, 0.95)"},
+                marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])},
                 hovertemplate="%{x}<br>%{fullData.name}: %{y:.2f}%<extra></extra>"
             )
             st.plotly_chart(perf_fig, use_container_width=True)
@@ -162,7 +163,7 @@ def render_performance_tab(
                         x=portfolio_returns["Date"],
                         y=drawdown,
                         fill="tozeroy",
-                        fillcolor="rgba(255, 107, 107, 0.14)",
+                        fillcolor=str(chart_theme["drawdown_fill"]),
                         line={"color": CHART_COLORS[3], "width": 2.6},
                         name="Drawdown",
                         hovertemplate="%{x|%b %Y}<br>Drawdown: %{y:.2f}%<extra></extra>",
@@ -175,9 +176,9 @@ def render_performance_tab(
                     yaxis_title="Drawdown (%)",
                     xaxis_title="Date",
                     paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(15, 27, 45, 0.24)",
+                    plot_bgcolor=str(chart_theme["plot_bg"]),
                     hovermode="x unified",
-                    font={"color": "#f3f7fb"},
+                    font={"color": str(chart_theme["font_color"])},
                     title={
                         "text": f"Drawdown ({portfolio_series_name})",
                         "x": 0,
@@ -186,12 +187,12 @@ def render_performance_tab(
                 )
                 drawdown_fig.update_xaxes(
                     showgrid=True,
-                    gridcolor="rgba(138, 160, 199, 0.10)",
+                    gridcolor=str(chart_theme["grid_color"]),
                     zeroline=False,
                 )
                 drawdown_fig.update_yaxes(
                     showgrid=True,
-                    gridcolor="rgba(138, 160, 199, 0.10)",
+                    gridcolor=str(chart_theme["grid_color"]),
                     zeroline=False,
                 )
                 st.plotly_chart(drawdown_fig, use_container_width=True)
@@ -220,19 +221,19 @@ def render_performance_tab(
             xaxis_title="Date",
             legend_title_text="Series",
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(15, 27, 45, 0.24)",
+            plot_bgcolor=str(chart_theme["plot_bg"]),
             hovermode="x unified",
-            font={"color": "#f3f7fb"},
+            font={"color": str(chart_theme["font_color"])},
             legend={"orientation": "h", "yanchor": "bottom", "y": 1.01, "x": 0},
         )
         cumulative_fig.update_xaxes(
             showgrid=True,
-            gridcolor="rgba(138, 160, 199, 0.10)",
+            gridcolor=str(chart_theme["grid_color"]),
             zeroline=False,
         )
         cumulative_fig.update_yaxes(
             showgrid=True,
-            gridcolor="rgba(138, 160, 199, 0.10)",
+            gridcolor=str(chart_theme["grid_color"]),
             zeroline=False,
         )
         cumulative_fig.update_traces(line={"width": 2.5})
@@ -289,20 +290,20 @@ def render_performance_tab(
                 showlegend=False,
                 yaxis_range=[y_start, y_end],
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(15, 27, 45, 0.24)",
-                font={"color": "#f3f7fb"},
+                plot_bgcolor=str(chart_theme["plot_bg"]),
+                font={"color": str(chart_theme["font_color"])},
                 title={"x": 0, "xanchor": "left"},
             )
             annualized_fig.update_xaxes(showgrid=False, zeroline=False)
             annualized_fig.update_yaxes(
                 showgrid=True,
-                gridcolor="rgba(138, 160, 199, 0.10)",
+                gridcolor=str(chart_theme["grid_color"]),
                 zeroline=False,
             )
             annualized_fig.update_traces(
                 textposition="outside",
                 cliponaxis=False,
-                marker_line={"width": 1.1, "color": "rgba(15, 27, 45, 0.95)"},
+                marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])},
                 hovertemplate="%{x}<br>%{y:.2f}%<extra></extra>",
             )
             st.plotly_chart(annualized_fig, use_container_width=True)
@@ -345,13 +346,7 @@ def render_performance_tab(
                 heatmap_data,
                 labels={"x": "Month", "y": "Year", "color": "Return (%)"},
                 title="Portfolio Monthly Return Heatmap",
-                color_continuous_scale=[
-                    [0.0, "#7a3131"],
-                    [0.45, "#22354d"],
-                    [0.5, "#2b3f58"],
-                    [0.55, "#396c75"],
-                    [1.0, "#63e6be"],
-                ],
+                color_continuous_scale=list(chart_theme["heatmap_scale"]),
                 aspect="auto",
                 template=PLOTLY_TEMPLATE,
             )
@@ -359,8 +354,8 @@ def render_performance_tab(
                 height=320,
                 margin={"l": 12, "r": 12, "t": 56, "b": 12},
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(15, 27, 45, 0.24)",
-                font={"color": "#f3f7fb"},
+                plot_bgcolor=str(chart_theme["plot_bg"]),
+                font={"color": str(chart_theme["font_color"])},
                 title={"x": 0, "xanchor": "left"},
             )
             st.plotly_chart(heatmap_fig, use_container_width=True)
@@ -396,7 +391,7 @@ def render_performance_tab(
             y="Symbol",
             orientation="h",
             color="Contribution",
-            color_continuous_scale=["#9fb0c7", "#63e6be"],
+            color_continuous_scale=list(chart_theme["positive_scale"]),
             template=PLOTLY_TEMPLATE,
             title="Top Contributors",
             labels={"Contribution": "Contribution (%)", "Symbol": ""},
@@ -406,17 +401,17 @@ def render_performance_tab(
             margin={"l": 8, "r": 8, "t": 54, "b": 10},
             coloraxis_showscale=False,
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(15, 27, 45, 0.24)",
-            font={"color": "#f3f7fb"},
+            plot_bgcolor=str(chart_theme["plot_bg"]),
+            font={"color": str(chart_theme["font_color"])},
             title={"x": 0, "xanchor": "left"},
         )
         winners_fig.update_xaxes(
             showgrid=True,
-            gridcolor="rgba(138, 160, 199, 0.10)",
+            gridcolor=str(chart_theme["grid_color"]),
             zeroline=False,
         )
         winners_fig.update_yaxes(showgrid=False, zeroline=False)
-        winners_fig.update_traces(marker_line={"width": 1.1, "color": "rgba(15, 27, 45, 0.95)"})
+        winners_fig.update_traces(marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])})
         st.plotly_chart(winners_fig, use_container_width=True)
 
     with losers_col:
@@ -426,7 +421,7 @@ def render_performance_tab(
             y="Symbol",
             orientation="h",
             color="Contribution",
-            color_continuous_scale=["#ffc2c2", "#ff6b6b"],
+            color_continuous_scale=list(chart_theme["negative_scale"]),
             template=PLOTLY_TEMPLATE,
             title="Bottom Contributors",
             labels={"Contribution": "Contribution (%)", "Symbol": ""},
@@ -436,15 +431,15 @@ def render_performance_tab(
             margin={"l": 8, "r": 8, "t": 54, "b": 10},
             coloraxis_showscale=False,
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(15, 27, 45, 0.24)",
-            font={"color": "#f3f7fb"},
+            plot_bgcolor=str(chart_theme["plot_bg"]),
+            font={"color": str(chart_theme["font_color"])},
             title={"x": 0, "xanchor": "left"},
         )
         losers_fig.update_xaxes(
             showgrid=True,
-            gridcolor="rgba(138, 160, 199, 0.10)",
+            gridcolor=str(chart_theme["grid_color"]),
             zeroline=False,
         )
         losers_fig.update_yaxes(showgrid=False, zeroline=False)
-        losers_fig.update_traces(marker_line={"width": 1.1, "color": "rgba(15, 27, 45, 0.95)"})
+        losers_fig.update_traces(marker_line={"width": 1.1, "color": str(chart_theme["marker_line"])})
         st.plotly_chart(losers_fig, use_container_width=True)
