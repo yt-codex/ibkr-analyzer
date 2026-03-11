@@ -149,7 +149,7 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
             template=PLOTLY_TEMPLATE,
             title="Cumulative Coverage Milestones (Top 50 Max)",
             color="CoveragePct",
-            color_continuous_scale=["#1f6e73", "#28d5b5"],
+            color_continuous_scale=["#9fb0c7", "#63e6be"],
             labels={"CoveragePct": "Cumulative coverage (%)", "Bucket": ""},
             text=coverage_df["CoveragePct"].map(lambda value: f"{value:.2f}%"),
         )

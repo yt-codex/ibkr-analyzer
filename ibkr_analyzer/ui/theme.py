@@ -8,20 +8,20 @@ def inject_custom_css() -> None:
             @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
             :root {
-                --bg-1: #08111f;
-                --bg-2: #0c1730;
-                --bg-3: #122347;
-                --panel-bg: rgba(11, 19, 36, 0.78);
-                --panel-bg-strong: rgba(10, 18, 34, 0.92);
-                --panel-border: rgba(146, 170, 211, 0.18);
-                --panel-border-strong: rgba(160, 188, 234, 0.26);
+                --bg-1: #071018;
+                --bg-2: #0f1b2d;
+                --bg-3: #15243a;
+                --panel-bg: rgba(15, 27, 45, 0.78);
+                --panel-bg-strong: rgba(21, 36, 58, 0.92);
+                --panel-border: rgba(159, 176, 199, 0.18);
+                --panel-border-strong: rgba(159, 176, 199, 0.28);
                 --text-main: #f3f7ff;
-                --text-soft: #acbedf;
-                --text-muted: #7d90b6;
-                --accent: #7ae7c7;
-                --accent-2: #78a8ff;
-                --accent-3: #ffb86a;
-                --danger: #ff6b88;
+                --text-soft: #9fb0c7;
+                --text-muted: #74859c;
+                --accent: #63e6be;
+                --accent-2: #7cb8ff;
+                --accent-3: #ffb454;
+                --danger: #ff6b6b;
                 --shadow-soft: 0 16px 38px rgba(2, 8, 19, 0.24);
                 --shadow-strong: 0 26px 60px rgba(2, 8, 19, 0.32);
             }
@@ -33,8 +33,8 @@ def inject_custom_css() -> None:
 
             .stApp {
                 background:
-                    radial-gradient(circle at 14% 14%, rgba(122, 231, 199, 0.12), transparent 32%),
-                    radial-gradient(circle at 86% 10%, rgba(120, 168, 255, 0.14), transparent 34%),
+                    radial-gradient(circle at 14% 14%, rgba(99, 230, 190, 0.12), transparent 32%),
+                    radial-gradient(circle at 86% 10%, rgba(124, 184, 255, 0.14), transparent 34%),
                     linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 48%, var(--bg-3) 100%);
                 color: var(--text-main);
             }
@@ -46,8 +46,8 @@ def inject_custom_css() -> None:
             }
 
             section[data-testid="stSidebar"] > div {
-                background: linear-gradient(180deg, rgba(10, 18, 35, 0.98) 0%, rgba(13, 22, 41, 0.94) 100%);
-                border-right: 1px solid rgba(138, 160, 199, 0.12);
+                background: linear-gradient(180deg, rgba(15, 27, 45, 0.98) 0%, rgba(21, 36, 58, 0.94) 100%);
+                border-right: 1px solid rgba(159, 176, 199, 0.12);
             }
 
             section[data-testid="stSidebar"] .block-container {
@@ -74,8 +74,8 @@ def inject_custom_css() -> None:
                 border-radius: 24px;
                 border: 1px solid var(--panel-border-strong);
                 background:
-                    linear-gradient(135deg, rgba(122, 231, 199, 0.12), rgba(120, 168, 255, 0.12) 48%, rgba(255, 184, 106, 0.08)),
-                    linear-gradient(180deg, rgba(12, 21, 40, 0.98), rgba(10, 18, 35, 0.94));
+                    linear-gradient(135deg, rgba(99, 230, 190, 0.12), rgba(124, 184, 255, 0.12) 48%, rgba(255, 180, 84, 0.08)),
+                    linear-gradient(180deg, rgba(15, 27, 45, 0.98), rgba(21, 36, 58, 0.94));
                 box-shadow: var(--shadow-strong);
             }
 
@@ -89,13 +89,13 @@ def inject_custom_css() -> None:
                 margin-bottom: 0.55rem;
                 padding: 0.28rem 0.62rem;
                 border-radius: 999px;
-                border: 1px solid rgba(160, 193, 236, 0.22);
-                background: rgba(8, 15, 29, 0.3);
+                border: 1px solid rgba(159, 176, 199, 0.22);
+                background: rgba(7, 16, 24, 0.32);
                 font-size: 0.72rem;
                 font-weight: 800;
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
-                color: #dbf7ee;
+                color: #dbfff5;
             }
 
             .hero-title {
@@ -110,7 +110,7 @@ def inject_custom_css() -> None:
                 margin-bottom: 0;
                 font-size: 1rem;
                 line-height: 1.65;
-                color: #c3d4ef;
+                color: #bfccdd;
             }
 
             .hero-badges {
@@ -124,11 +124,11 @@ def inject_custom_css() -> None:
             .hero-badge {
                 padding: 0.48rem 0.72rem;
                 border-radius: 999px;
-                border: 1px solid rgba(160, 193, 236, 0.18);
-                background: rgba(8, 15, 29, 0.38);
+                border: 1px solid rgba(159, 176, 199, 0.18);
+                background: rgba(7, 16, 24, 0.38);
                 font-size: 0.79rem;
                 font-weight: 700;
-                color: #e7f2ff;
+                color: #edf4fc;
             }
 
             .panel {
@@ -151,8 +151,8 @@ def inject_custom_css() -> None:
                 min-height: 92px;
                 padding: 0.9rem 0.95rem;
                 border-radius: 18px;
-                border: 1px solid rgba(152, 180, 222, 0.16);
-                background: rgba(10, 18, 35, 0.76);
+                border: 1px solid rgba(159, 176, 199, 0.16);
+                background: rgba(15, 27, 45, 0.76);
                 box-shadow: var(--shadow-soft);
             }
 
@@ -194,8 +194,8 @@ def inject_custom_css() -> None:
                 margin: 0.1rem 0 1rem 0;
                 padding: 0.95rem 1rem;
                 border-radius: 18px;
-                border: 1px solid rgba(152, 180, 222, 0.14);
-                background: linear-gradient(90deg, rgba(122, 231, 199, 0.07), rgba(120, 168, 255, 0.05) 44%, transparent 100%);
+                border: 1px solid rgba(159, 176, 199, 0.14);
+                background: linear-gradient(90deg, rgba(99, 230, 190, 0.08), rgba(124, 184, 255, 0.05) 44%, transparent 100%);
             }
 
             .section-eyebrow {
@@ -204,7 +204,7 @@ def inject_custom_css() -> None:
                 font-weight: 800;
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
-                color: #a5dfd1;
+                color: #9de8d1;
             }
 
             .section-title {
@@ -226,16 +226,16 @@ def inject_custom_css() -> None:
                 flex-shrink: 0;
                 padding: 0.48rem 0.72rem;
                 border-radius: 999px;
-                border: 1px solid rgba(152, 180, 222, 0.2);
-                background: rgba(9, 16, 30, 0.5);
+                border: 1px solid rgba(159, 176, 199, 0.2);
+                background: rgba(7, 16, 24, 0.48);
                 font-size: 0.8rem;
                 font-weight: 700;
-                color: #e4efff;
+                color: #edf4fc;
             }
 
             div[data-testid="stMetric"] {
-                background: rgba(10, 18, 35, 0.78);
-                border: 1px solid rgba(152, 180, 222, 0.16);
+                background: rgba(15, 27, 45, 0.78);
+                border: 1px solid rgba(159, 176, 199, 0.16);
                 padding: 0.82rem 0.9rem;
                 border-radius: 18px;
                 min-height: 118px;
@@ -254,7 +254,7 @@ def inject_custom_css() -> None:
             }
 
             div[data-testid="stMetricDelta"] {
-                color: #daf6ec;
+                color: #d8fff3;
             }
 
             div[data-testid="stTabs"] [data-baseweb="tab-list"] {
@@ -263,8 +263,8 @@ def inject_custom_css() -> None:
                 margin-bottom: 1rem;
                 padding: 0.42rem;
                 border-radius: 18px;
-                background: rgba(9, 16, 30, 0.44);
-                border: 1px solid rgba(152, 180, 222, 0.12);
+                background: rgba(7, 16, 24, 0.46);
+                border: 1px solid rgba(159, 176, 199, 0.12);
             }
 
             div[data-testid="stTabs"] [data-baseweb="tab"] {
@@ -278,24 +278,24 @@ def inject_custom_css() -> None:
             }
 
             div[data-testid="stTabs"] [aria-selected="true"] {
-                background: linear-gradient(135deg, rgba(122, 231, 199, 0.16), rgba(120, 168, 255, 0.16));
+                background: linear-gradient(135deg, rgba(99, 230, 190, 0.16), rgba(124, 184, 255, 0.16));
                 color: var(--text-main);
-                box-shadow: inset 0 0 0 1px rgba(165, 195, 232, 0.2);
+                box-shadow: inset 0 0 0 1px rgba(159, 176, 199, 0.2);
             }
 
             div[data-testid="stPlotlyChart"],
             div[data-testid="stDataFrame"] {
                 border-radius: 20px;
                 overflow: hidden;
-                background: rgba(9, 16, 30, 0.36);
-                border: 1px solid rgba(152, 180, 222, 0.12);
+                background: rgba(15, 27, 45, 0.34);
+                border: 1px solid rgba(159, 176, 199, 0.12);
                 box-shadow: var(--shadow-soft);
             }
 
             [data-testid="stFileUploaderDropzone"] {
                 border-radius: 18px;
-                border: 1px dashed rgba(152, 180, 222, 0.28);
-                background: rgba(9, 16, 30, 0.52);
+                border: 1px dashed rgba(159, 176, 199, 0.28);
+                background: rgba(15, 27, 45, 0.52);
             }
 
             [data-testid="stFileUploaderDropzone"] * {
@@ -309,8 +309,8 @@ def inject_custom_css() -> None:
                 margin: 0.15rem 0 0.45rem 0;
                 padding: 0.34rem 0.55rem;
                 border-radius: 999px;
-                border: 1px solid rgba(152, 180, 222, 0.16);
-                background: rgba(9, 16, 30, 0.44);
+                border: 1px solid rgba(159, 176, 199, 0.16);
+                background: rgba(15, 27, 45, 0.44);
                 font-family: "Space Grotesk", "Segoe UI", sans-serif;
                 font-size: 0.88rem;
                 font-weight: 700;
@@ -324,8 +324,8 @@ def inject_custom_css() -> None:
                 width: 1rem;
                 height: 1rem;
                 border-radius: 999px;
-                border: 1px solid rgba(160, 185, 225, 0.38);
-                color: #b8caea;
+                border: 1px solid rgba(159, 176, 199, 0.38);
+                color: #b8c6da;
                 font-size: 0.68rem;
                 cursor: help;
                 line-height: 1rem;
@@ -335,9 +335,9 @@ def inject_custom_css() -> None:
                 font-family: "Manrope", "Segoe UI", sans-serif;
                 font-size: 0.72rem;
                 font-weight: 700;
-                color: #d9e7ff;
-                background: rgba(95, 125, 178, 0.18);
-                border: 1px solid rgba(151, 178, 224, 0.22);
+                color: #e6eef8;
+                background: rgba(124, 184, 255, 0.14);
+                border: 1px solid rgba(159, 176, 199, 0.22);
                 border-radius: 999px;
                 padding: 0.1rem 0.44rem;
             }

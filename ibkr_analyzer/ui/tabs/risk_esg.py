@@ -165,7 +165,7 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
                 color="Combined",
                 template=PLOTLY_TEMPLATE,
                 title="Weight vs ESG Score",
-                color_continuous_scale=["#ff5f8f", "#5ca3ff", "#28d5b5"],
+                color_continuous_scale=["#ff6b6b", "#7cb8ff", "#63e6be"],
             )
             scatter_fig.update_layout(height=340, margin={"l": 12, "r": 12, "t": 46, "b": 8})
             st.plotly_chart(scatter_fig, use_container_width=True)

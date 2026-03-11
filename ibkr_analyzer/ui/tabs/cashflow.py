@@ -93,7 +93,7 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
                 x="Month",
                 y="Amount",
                 color="Amount",
-                color_continuous_scale=["#ff5f8f", "#1f6e73", "#28d5b5"],
+                color_continuous_scale=["#ff6b6b", "#9fb0c7", "#63e6be"],
                 template=PLOTLY_TEMPLATE,
                 title="Net Deposits / Withdrawals by Month",
                 labels={
@@ -149,7 +149,7 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
                 else "Cumulative",
             },
         )
-        dividend_fig.update_traces(line={"color": "#28d5b5", "width": 2.2})
+        dividend_fig.update_traces(line={"color": "#63e6be", "width": 2.2})
         dividend_fig.update_layout(height=320, margin={"l": 12, "r": 12, "t": 46, "b": 8})
         st.plotly_chart(dividend_fig, use_container_width=True)
 

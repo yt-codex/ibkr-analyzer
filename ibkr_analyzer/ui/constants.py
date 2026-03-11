@@ -1,2 +1,2 @@
 PLOTLY_TEMPLATE = "plotly_dark"
-CHART_COLORS = ["#7ae7c7", "#78a8ff", "#ffb86a", "#ff6b88", "#b7f171", "#d6b8ff"]
+CHART_COLORS = ["#63e6be", "#7cb8ff", "#ffb454", "#ff6b6b", "#4fc3a1", "#b8c6da"]

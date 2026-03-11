@@ -95,7 +95,7 @@ def render_overview_tab(
                     y=nav_table["NAV"],
                     mode="lines",
                     fill="tozeroy",
-                    fillcolor="rgba(122, 231, 199, 0.14)",
+                    fillcolor="rgba(99, 230, 190, 0.14)",
                     line={"color": CHART_COLORS[0], "width": 3.0},
                     name="NAV",
                     hovertemplate="%{x|%b %Y}<br>NAV: %{y:,.2f}<extra></extra>",
@@ -109,7 +109,7 @@ def render_overview_tab(
                     marker={
                         "size": 10,
                         "color": CHART_COLORS[1],
-                        "line": {"width": 2, "color": "rgba(9,16,30,0.92)"},
+                        "line": {"width": 2, "color": "rgba(7, 16, 24, 0.92)"},
                     },
                     name="Latest NAV",
                     showlegend=False,
@@ -121,12 +121,12 @@ def render_overview_tab(
                 height=360,
                 margin={"l": 12, "r": 12, "t": 56, "b": 12},
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(8, 15, 29, 0.18)",
+                plot_bgcolor="rgba(15, 27, 45, 0.24)",
                 xaxis_title="Date",
                 yaxis_title=f"NAV ({base_currency})" if base_currency else "NAV",
                 hovermode="x unified",
                 legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
-                font={"color": "#dce8fb"},
+                font={"color": "#f3f7fb"},
                 title={"text": "Portfolio NAV Over Time", "x": 0, "xanchor": "left"},
             )
             nav_fig.update_xaxes(
@@ -192,9 +192,9 @@ def render_overview_tab(
             height=360,
             margin={"l": 8, "r": 8, "t": 56, "b": 12},
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(8, 15, 29, 0.18)",
+            plot_bgcolor="rgba(15, 27, 45, 0.24)",
             yaxis_title=f"Amount ({base_currency})" if base_currency else "Amount",
-            font={"color": "#dce8fb"},
+            font={"color": "#f3f7fb"},
             title={"text": "NAV Change Bridge", "x": 0, "xanchor": "left"},
         )
         nav_bridge.update_yaxes(
@@ -239,7 +239,7 @@ def render_overview_tab(
         y="Symbol",
         color="UnrealizedP&L",
         orientation="h",
-        color_continuous_scale=[CHART_COLORS[3], CHART_COLORS[1], CHART_COLORS[0]],
+        color_continuous_scale=[CHART_COLORS[3], "#9fb0c7", CHART_COLORS[0]],
         template=PLOTLY_TEMPLATE,
         title="Top Holdings by Market Value",
         labels={
@@ -252,8 +252,8 @@ def render_overview_tab(
         margin={"l": 8, "r": 8, "t": 56, "b": 12},
         coloraxis_showscale=False,
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(8, 15, 29, 0.18)",
-        font={"color": "#dce8fb"},
+        plot_bgcolor="rgba(15, 27, 45, 0.24)",
+        font={"color": "#f3f7fb"},
         title={"x": 0, "xanchor": "left"},
     )
     top_fig.update_xaxes(

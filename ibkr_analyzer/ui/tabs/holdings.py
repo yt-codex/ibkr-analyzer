@@ -161,7 +161,7 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
             y="Symbol",
             orientation="h",
             color="NetInvested",
-            color_continuous_scale=["#5ca3ff", "#28d5b5"],
+            color_continuous_scale=["#7cb8ff", "#63e6be"],
             template=PLOTLY_TEMPLATE,
             title="Net Capital Deployed by Symbol (Base Currency)",
             labels={"NetInvested": "Net Invested", "Symbol": ""},
