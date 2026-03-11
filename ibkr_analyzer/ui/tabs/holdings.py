@@ -9,11 +9,12 @@ from ibkr_analyzer.report_utils import (
     sanitize_total_rows,
     to_numeric,
 )
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
+from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
 
 
 def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
     chart_theme = get_chart_theme()
+    plotly_template = get_plotly_template()
     positions = get_table(
         report,
         "Open Position Summary",
@@ -78,7 +79,7 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
                 names="Sector",
                 values="Value",
                 title="Holdings by Sector",
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
                 color_discrete_sequence=CHART_COLORS,
                 hole=0.52,
             )
@@ -99,7 +100,7 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
             names="Currency",
             values="Value",
             title="Exposure by Currency",
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             color_discrete_sequence=CHART_COLORS,
             hole=0.52,
         )
@@ -163,7 +164,7 @@ def render_holdings_tab(report: ParsedIBKRReport, base_currency: str) -> None:
             orientation="h",
             color="NetInvested",
             color_continuous_scale=list(chart_theme["capital_scale"]),
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             title="Net Capital Deployed by Symbol (Base Currency)",
             labels={"NetInvested": "Net Invested", "Symbol": ""},
         )

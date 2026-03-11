@@ -17,13 +17,14 @@ from ibkr_analyzer.report_utils import (
     to_numeric,
 )
 from ibkr_analyzer.ui.chrome import render_section_intro
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
+from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
 
 
 def render_performance_tab(
     report: ParsedIBKRReport, account_hint: str, performance_measure: str
 ) -> None:
     chart_theme = get_chart_theme()
+    plotly_template = get_plotly_template()
     time_table = get_table(
         report,
         "Time Period Benchmark Comparison",
@@ -114,7 +115,7 @@ def render_performance_tab(
                 y="AnnualReturn",
                 color="Series",
                 barmode="group",
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
                 title="Annual Return Comparison",
                 color_discrete_sequence=CHART_COLORS,
                 category_orders={"YearLabel": year_order},
@@ -170,7 +171,7 @@ def render_performance_tab(
                     )
                 )
                 drawdown_fig.update_layout(
-                    template=PLOTLY_TEMPLATE,
+                    template=plotly_template,
                     height=360,
                     margin={"l": 12, "r": 12, "t": 56, "b": 12},
                     yaxis_title="Drawdown (%)",
@@ -211,7 +212,7 @@ def render_performance_tab(
             x="Date",
             y="Return",
             color="Series",
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             color_discrete_sequence=CHART_COLORS,
         )
         cumulative_fig.update_layout(
@@ -279,7 +280,7 @@ def render_performance_tab(
                 x="Series",
                 y="AnnualizedReturn",
                 color="Series",
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
                 color_discrete_sequence=CHART_COLORS,
                 labels={"AnnualizedReturn": "Annualized return (%)", "Series": ""},
                 text=annualized_df["AnnualizedReturn"].map(lambda value: f"{value:.2f}%"),
@@ -348,7 +349,7 @@ def render_performance_tab(
                 title="Portfolio Monthly Return Heatmap",
                 color_continuous_scale=list(chart_theme["heatmap_scale"]),
                 aspect="auto",
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
             )
             heatmap_fig.update_layout(
                 height=320,
@@ -392,7 +393,7 @@ def render_performance_tab(
             orientation="h",
             color="Contribution",
             color_continuous_scale=list(chart_theme["positive_scale"]),
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             title="Top Contributors",
             labels={"Contribution": "Contribution (%)", "Symbol": ""},
         )
@@ -422,7 +423,7 @@ def render_performance_tab(
             orientation="h",
             color="Contribution",
             color_continuous_scale=list(chart_theme["negative_scale"]),
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             title="Bottom Contributors",
             labels={"Contribution": "Contribution (%)", "Symbol": ""},
         )

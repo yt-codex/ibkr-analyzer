@@ -10,11 +10,12 @@ from ibkr_analyzer.report_utils import (
     sanitize_total_rows,
     to_numeric,
 )
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
+from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
 
 
 def render_concentration_tab(report: ParsedIBKRReport) -> None:
     chart_theme = get_chart_theme()
+    plotly_template = get_plotly_template()
     concentration = get_table(
         report,
         "Concentration",
@@ -112,7 +113,7 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
             names="Bucket",
             values="Weight",
             hole=0.58,
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             title="Underlying Stock Concentration",
             color_discrete_sequence=CHART_COLORS,
         )
@@ -147,7 +148,7 @@ def render_concentration_tab(report: ParsedIBKRReport) -> None:
             coverage_df,
             x="Bucket",
             y="CoveragePct",
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             title="Cumulative Coverage Milestones (Top 50 Max)",
             color="CoveragePct",
             color_continuous_scale=list(chart_theme["positive_scale"]),

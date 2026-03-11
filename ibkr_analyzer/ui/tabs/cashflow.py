@@ -14,11 +14,12 @@ from ibkr_analyzer.report_utils import (
     remaining_income_metric_label,
     to_numeric,
 )
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
+from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
 
 
 def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> None:
     chart_theme = get_chart_theme()
+    plotly_template = get_plotly_template()
     cashflows = get_table(
         report,
         "Deposits And Withdrawals",
@@ -95,7 +96,7 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
                 y="Amount",
                 color="Amount",
                 color_continuous_scale=list(chart_theme["cashflow_scale"]),
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
                 title="Net Deposits / Withdrawals by Month",
                 labels={
                     "Amount": f"Amount ({base_currency})" if base_currency else "Amount",
@@ -122,7 +123,7 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
             x="Category",
             y="Amount",
             color="Category",
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             color_discrete_sequence=CHART_COLORS,
             title="Income and Cost Components",
             labels={"Amount": f"Amount ({base_currency})" if base_currency else "Amount"},
@@ -141,7 +142,7 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
             dividends,
             x="DateParsed",
             y="CumulativeDividends",
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             title="Cumulative Dividends",
             labels={
                 "DateParsed": "Pay Date",

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-PLOTLY_TEMPLATE = "plotly_dark"
-
 _THEME_PRESETS = {
     "slate_mint": {
+        "plotly_template": "plotly_dark",
         "chart_colors": [
             "#63e6be",
             "#7cb8ff",
@@ -36,33 +35,35 @@ _THEME_PRESETS = {
         },
     },
     "editorial": {
+        "plotly_template": "plotly_white",
         "chart_colors": [
             "#e6a15a",
-            "#8ab4f8",
-            "#f2c14e",
-            "#f87171",
-            "#d9c6a5",
-            "#c5d7f2",
+            "#2f7f88",
+            "#c05a3d",
+            "#4b6cb7",
+            "#8e3b46",
+            "#9b8f81",
+            "#d8c2a8",
         ],
         "chart": {
-            "font_color": "#f5f1ea",
-            "plot_bg": "rgba(35, 38, 44, 0.28)",
-            "grid_color": "rgba(185, 174, 161, 0.12)",
-            "marker_line": "rgba(26, 28, 32, 0.95)",
-            "nav_fill": "rgba(230, 161, 90, 0.18)",
-            "drawdown_fill": "rgba(248, 113, 113, 0.16)",
-            "neutral": "#b9aea1",
-            "diverging_scale": ["#f87171", "#b9aea1", "#e6a15a"],
-            "positive_scale": ["#b9aea1", "#e6a15a"],
-            "negative_scale": ["#ffd7cf", "#f87171"],
-            "cashflow_scale": ["#f87171", "#b9aea1", "#e6a15a"],
-            "capital_scale": ["#8ab4f8", "#e6a15a"],
-            "risk_scale": ["#f87171", "#8ab4f8", "#e6a15a"],
+            "font_color": "#1f2328",
+            "plot_bg": "#f7f1e7",
+            "grid_color": "rgba(65, 59, 52, 0.12)",
+            "marker_line": "rgba(232, 222, 208, 0.95)",
+            "nav_fill": "rgba(230, 161, 90, 0.22)",
+            "drawdown_fill": "rgba(192, 90, 61, 0.18)",
+            "neutral": "#9b8f81",
+            "diverging_scale": ["#c05a3d", "#d4c7b8", "#2f7f88"],
+            "positive_scale": ["#d4c7b8", "#2f7f88"],
+            "negative_scale": ["#e7b9ae", "#c05a3d"],
+            "cashflow_scale": ["#c05a3d", "#d4c7b8", "#2f7f88"],
+            "capital_scale": ["#4b6cb7", "#e6a15a"],
+            "risk_scale": ["#c05a3d", "#4b6cb7", "#2f7f88"],
             "heatmap_scale": [
-                [0.0, "#7a3c35"],
-                [0.45, "#413b40"],
-                [0.5, "#52494e"],
-                [0.55, "#7b624d"],
+                [0.0, "#a24e3a"],
+                [0.45, "#d9cfc0"],
+                [0.5, "#efe6d9"],
+                [0.55, "#b8c7c3"],
                 [1.0, "#e6a15a"],
             ],
         },
@@ -87,6 +88,10 @@ def set_active_theme(theme_name: str) -> str:
 
 def get_active_theme() -> str:
     return _ACTIVE_THEME
+
+
+def get_plotly_template() -> str:
+    return str(_THEME_PRESETS[_ACTIVE_THEME]["plotly_template"])
 
 
 def get_chart_theme() -> dict[str, object]:

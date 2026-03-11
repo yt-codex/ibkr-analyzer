@@ -10,11 +10,12 @@ from ibkr_analyzer.report_utils import (
     sanitize_total_rows,
     to_numeric,
 )
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
+from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
 
 
 def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
     chart_theme = get_chart_theme()
+    plotly_template = get_plotly_template()
     risk_absolute = get_table(
         report,
         "Risk Measures Benchmark Comparison",
@@ -93,7 +94,7 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
                 y="Value",
                 color="Series",
                 barmode="group",
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
                 color_discrete_sequence=CHART_COLORS,
                 title="Risk Measure Comparison",
             )
@@ -134,7 +135,7 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
                 x="Category",
                 y="Score",
                 color="Category",
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
                 title="Portfolio-Level ESG Snapshot",
                 color_discrete_sequence=CHART_COLORS,
             )
@@ -164,7 +165,7 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
                 hover_name="Symbol",
                 hover_data={"Description": True, "Combined": True},
                 color="Combined",
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
                 title="Weight vs ESG Score",
                 color_continuous_scale=list(chart_theme["risk_scale"]),
             )

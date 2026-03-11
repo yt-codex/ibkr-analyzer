@@ -17,7 +17,7 @@ from ibkr_analyzer.report_utils import (
     value_or_zero,
 )
 from ibkr_analyzer.ui.chrome import render_section_intro
-from ibkr_analyzer.ui.constants import CHART_COLORS, PLOTLY_TEMPLATE, get_chart_theme
+from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly_template
 
 
 def render_overview_tab(
@@ -28,6 +28,7 @@ def render_overview_tab(
     performance_measure: str,
 ) -> None:
     chart_theme = get_chart_theme()
+    plotly_template = get_plotly_template()
     ending_nav = parse_number(key_stats_row.get("EndingNAV"))
     cumulative_return = parse_number(key_stats_row.get("CumulativeReturn"))
     annualized_return = annualize_return(cumulative_return, analysis_years)
@@ -118,7 +119,7 @@ def render_overview_tab(
                 )
             )
             nav_fig.update_layout(
-                template=PLOTLY_TEMPLATE,
+                template=plotly_template,
                 height=360,
                 margin={"l": 12, "r": 12, "t": 56, "b": 12},
                 paper_bgcolor="rgba(0,0,0,0)",
@@ -189,7 +190,7 @@ def render_overview_tab(
             )
         )
         nav_bridge.update_layout(
-            template=PLOTLY_TEMPLATE,
+            template=plotly_template,
             height=360,
             margin={"l": 8, "r": 8, "t": 56, "b": 12},
             paper_bgcolor="rgba(0,0,0,0)",
@@ -241,7 +242,7 @@ def render_overview_tab(
         color="UnrealizedP&L",
         orientation="h",
         color_continuous_scale=list(chart_theme["diverging_scale"]),
-        template=PLOTLY_TEMPLATE,
+        template=plotly_template,
         title="Top Holdings by Market Value",
         labels={
             "Value": f"Value ({base_currency})" if base_currency else "Value",

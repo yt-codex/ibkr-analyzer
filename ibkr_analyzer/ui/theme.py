@@ -74,70 +74,70 @@ _CSS_PRESETS = {
     "editorial": {
         "body_font": '"Libre Franklin", "Segoe UI", sans-serif',
         "heading_font": '"Fraunces", Georgia, serif',
-        "bg_1": "#111214",
-        "bg_2": "#17181b",
-        "bg_3": "#23262c",
-        "panel_bg": "rgba(26, 28, 32, 0.92)",
-        "panel_bg_strong": "rgba(35, 38, 44, 0.97)",
-        "panel_border": "rgba(185, 174, 161, 0.18)",
-        "panel_border_strong": "rgba(230, 161, 90, 0.24)",
-        "text_main": "#f5f1ea",
-        "text_soft": "#b9aea1",
-        "text_muted": "#8f857a",
-        "accent": "#e6a15a",
-        "accent_2": "#8ab4f8",
-        "accent_3": "#f2c14e",
-        "danger": "#f87171",
-        "shadow_soft": "0 16px 38px rgba(6, 6, 7, 0.26)",
-        "shadow_strong": "0 26px 60px rgba(6, 6, 7, 0.34)",
-        "bg_glow_a": "rgba(230, 161, 90, 0.16)",
-        "bg_glow_b": "rgba(138, 180, 248, 0.08)",
-        "bg_glow_c": "rgba(242, 193, 78, 0.08)",
-        "sidebar_glow_a": "rgba(230, 161, 90, 0.08)",
-        "sidebar_glow_b": "rgba(138, 180, 248, 0.06)",
-        "sidebar_bg_top": "rgba(26, 28, 32, 0.99)",
-        "sidebar_bg_bottom": "rgba(35, 38, 44, 0.97)",
-        "hero_overlay_a": "rgba(230, 161, 90, 0.18)",
-        "hero_overlay_b": "rgba(138, 180, 248, 0.08)",
-        "hero_overlay_c": "rgba(242, 193, 78, 0.12)",
-        "hero_eyebrow_border": "rgba(230, 161, 90, 0.34)",
-        "hero_eyebrow_bg": "rgba(230, 161, 90, 0.12)",
-        "hero_eyebrow_text": "#fff0df",
-        "hero_sub": "#d4c8ba",
-        "hero_badge_border": "rgba(230, 161, 90, 0.22)",
-        "hero_badge_bg": "rgba(230, 161, 90, 0.1)",
-        "hero_badge_text": "#f8eee4",
-        "hero_badge_alt_border": "rgba(138, 180, 248, 0.22)",
-        "hero_badge_alt_bg": "rgba(138, 180, 248, 0.12)",
-        "hero_badge_emphasis_border": "rgba(242, 193, 78, 0.28)",
-        "hero_badge_emphasis_bg": "rgba(242, 193, 78, 0.12)",
-        "hero_badge_emphasis_text": "#fff3ce",
-        "section_bg_a": "rgba(230, 161, 90, 0.1)",
-        "section_bg_b": "rgba(138, 180, 248, 0.05)",
-        "section_eyebrow": "#f0c79f",
-        "section_badge_bg": "rgba(17, 18, 20, 0.5)",
-        "surface_tint_a": "rgba(230, 161, 90, 0.2)",
-        "surface_tint_b": "rgba(138, 180, 248, 0.16)",
-        "surface_tint_c": "rgba(242, 193, 78, 0.2)",
-        "tabs_bg": "rgba(17, 18, 20, 0.46)",
-        "tabs_active_a": "rgba(230, 161, 90, 0.18)",
-        "tabs_active_b": "rgba(242, 193, 78, 0.16)",
-        "tabs_active_border": "rgba(230, 161, 90, 0.2)",
-        "chart_frame_bg": "rgba(35, 38, 44, 0.36)",
-        "uploader_border": "rgba(230, 161, 90, 0.36)",
-        "uploader_bg_a": "rgba(230, 161, 90, 0.08)",
-        "uploader_bg_b": "rgba(242, 193, 78, 0.04)",
-        "button_border": "rgba(230, 161, 90, 0.28)",
-        "button_bg_a": "rgba(230, 161, 90, 0.2)",
-        "button_bg_b": "rgba(242, 193, 78, 0.14)",
-        "alert_border": "rgba(230, 161, 90, 0.28)",
-        "alert_bg_a": "rgba(230, 161, 90, 0.14)",
-        "alert_bg_b": "rgba(138, 180, 248, 0.08)",
-        "hint_border": "rgba(185, 174, 161, 0.38)",
-        "hint_icon": "#d7c9b9",
-        "hint_value_bg": "rgba(230, 161, 90, 0.14)",
-        "hint_value_border": "rgba(185, 174, 161, 0.24)",
-        "hint_value_text": "#f7ede1",
+        "bg_1": "#efe6d8",
+        "bg_2": "#efe6d8",
+        "bg_3": "#e7dccd",
+        "panel_bg": "#f6efe6",
+        "panel_bg_strong": "#f1e8db",
+        "panel_border": "rgba(96, 84, 72, 0.20)",
+        "panel_border_strong": "rgba(58, 50, 43, 0.18)",
+        "text_main": "#1f2328",
+        "text_soft": "#59534c",
+        "text_muted": "#857c71",
+        "accent": "#0f6d75",
+        "accent_2": "#1f4f82",
+        "accent_3": "#b78447",
+        "danger": "#b2483f",
+        "shadow_soft": "none",
+        "shadow_strong": "none",
+        "bg_glow_a": "transparent",
+        "bg_glow_b": "transparent",
+        "bg_glow_c": "transparent",
+        "sidebar_glow_a": "transparent",
+        "sidebar_glow_b": "transparent",
+        "sidebar_bg_top": "#e7dccd",
+        "sidebar_bg_bottom": "#e7dccd",
+        "hero_overlay_a": "transparent",
+        "hero_overlay_b": "transparent",
+        "hero_overlay_c": "transparent",
+        "hero_eyebrow_border": "rgba(31, 35, 40, 0.18)",
+        "hero_eyebrow_bg": "transparent",
+        "hero_eyebrow_text": "#5f584f",
+        "hero_sub": "#4f4b45",
+        "hero_badge_border": "rgba(15, 109, 117, 0.26)",
+        "hero_badge_bg": "#f6efe6",
+        "hero_badge_text": "#244247",
+        "hero_badge_alt_border": "rgba(31, 79, 130, 0.2)",
+        "hero_badge_alt_bg": "#f6efe6",
+        "hero_badge_emphasis_border": "rgba(183, 132, 71, 0.26)",
+        "hero_badge_emphasis_bg": "#f6efe6",
+        "hero_badge_emphasis_text": "#6f5430",
+        "section_bg_a": "transparent",
+        "section_bg_b": "transparent",
+        "section_eyebrow": "#7a6e5f",
+        "section_badge_bg": "#f6efe6",
+        "surface_tint_a": "rgba(15, 109, 117, 0.18)",
+        "surface_tint_b": "rgba(31, 79, 130, 0.14)",
+        "surface_tint_c": "rgba(183, 132, 71, 0.18)",
+        "tabs_bg": "transparent",
+        "tabs_active_a": "transparent",
+        "tabs_active_b": "transparent",
+        "tabs_active_border": "rgba(31, 35, 40, 0.18)",
+        "chart_frame_bg": "#f7f1e7",
+        "uploader_border": "rgba(96, 84, 72, 0.28)",
+        "uploader_bg_a": "transparent",
+        "uploader_bg_b": "transparent",
+        "button_border": "rgba(15, 109, 117, 0.4)",
+        "button_bg_a": "#1b7480",
+        "button_bg_b": "#1b7480",
+        "alert_border": "rgba(183, 132, 71, 0.28)",
+        "alert_bg_a": "#efe1c8",
+        "alert_bg_b": "#efe1c8",
+        "hint_border": "rgba(96, 84, 72, 0.26)",
+        "hint_icon": "#6d655b",
+        "hint_value_bg": "#efe6d8",
+        "hint_value_border": "rgba(96, 84, 72, 0.22)",
+        "hint_value_text": "#4d4741",
     },
 }
 
@@ -146,39 +146,33 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
     theme = _CSS_PRESETS.get(theme_name, _CSS_PRESETS["slate_mint"])
     editorial_overrides = """
             .stApp {
-                background:
-                    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 96px),
-                    radial-gradient(circle at 14% 14%, rgba(230, 161, 90, 0.12), transparent 24%),
-                    radial-gradient(circle at 84% 10%, rgba(138, 180, 248, 0.06), transparent 26%),
-                    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 42%, var(--bg-3) 100%);
+                background: #efe6d8 !important;
             }
 
             .block-container {
                 max-width: 1320px;
             }
 
-            .hero-card {
-                grid-template-columns: 1fr;
-                gap: 1.1rem;
-                padding: 1.75rem 1.65rem 1.45rem 1.65rem;
-                border-radius: 10px;
-                box-shadow: none;
-                position: relative;
-                overflow: hidden;
+            [data-testid="stHeader"] {
+                background: rgba(239, 230, 216, 0.92);
             }
 
-            .hero-card::after {
-                content: "";
-                position: absolute;
-                left: 1.65rem;
-                right: 1.65rem;
-                bottom: 0.85rem;
-                height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(230, 161, 90, 0.55), transparent);
+            .hero-card {
+                display: block;
+                gap: 1.1rem;
+                padding: 1.15rem 0 1rem 0;
+                margin: 0.15rem 0 1.25rem 0;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+                border-top: 1px solid rgba(58, 50, 43, 0.18);
+                border-bottom: 1px solid rgba(58, 50, 43, 0.18);
+                background: transparent;
+                box-shadow: none;
             }
 
             .hero-copy {
-                max-width: 58rem;
+                max-width: 64rem;
             }
 
             .hero-eyebrow,
@@ -192,21 +186,22 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             }
 
             .hero-title {
-                max-width: 13ch;
-                font-size: clamp(2.35rem, 4.8vw, 3.65rem);
-                line-height: 0.92;
-                letter-spacing: -0.04em;
+                max-width: 12ch;
+                font-size: clamp(2.8rem, 5vw, 4.3rem);
+                line-height: 0.9;
+                letter-spacing: -0.05em;
             }
 
             .hero-sub {
                 max-width: 54rem;
-                font-size: 1.02rem;
-                line-height: 1.75;
+                font-size: 1rem;
+                line-height: 1.72;
             }
 
             .hero-badges {
                 justify-content: flex-start;
                 gap: 0.6rem;
+                margin-top: 0.85rem;
             }
 
             .panel,
@@ -221,10 +216,13 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 box-shadow: none;
             }
 
+            section[data-testid="stSidebar"] > div {
+                background: #e7dccd;
+                border-right: 1px solid rgba(96, 84, 72, 0.18);
+            }
+
             .summary-item {
-                background:
-                    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
-                    var(--panel-bg);
+                background: #f6efe6;
                 border-top: 2px solid rgba(230, 161, 90, 0.45);
             }
 
@@ -237,18 +235,19 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             }
 
             .section-intro {
-                border-radius: 8px;
+                border-radius: 0;
                 border-left: 3px solid var(--accent);
-                padding-left: 1.15rem;
-                background:
-                    linear-gradient(90deg, rgba(230, 161, 90, 0.08), transparent 55%),
-                    var(--panel-bg);
+                border-top: none;
+                border-right: none;
+                border-bottom: none;
+                padding: 0.15rem 0 0.15rem 1.15rem;
+                background: transparent;
             }
 
             div[data-testid="stTabs"] [data-baseweb="tab-list"] {
                 background: transparent;
                 border: none;
-                border-bottom: 1px solid rgba(185, 174, 161, 0.22);
+                border-bottom: 1px solid rgba(58, 50, 43, 0.18);
                 border-radius: 0;
                 padding: 0 0 0.6rem 0;
                 gap: 1rem;
@@ -280,25 +279,47 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             }
 
             section[data-testid="stSidebar"] > div {
-                border-right: 1px solid rgba(230, 161, 90, 0.18);
+                border-right: 1px solid rgba(96, 84, 72, 0.18);
             }
 
             .stButton > button,
             button[kind="secondary"],
             [data-testid="stBaseButton-secondary"] {
-                border-radius: 6px;
+                border-radius: 0;
                 text-transform: uppercase;
                 letter-spacing: 0.08em;
+                color: #f7f1e7;
             }
 
             div[data-testid="stMetricValue"] {
                 font-size: 1.7rem;
             }
 
+            div[data-testid="stMetric"] {
+                background: #f6efe6;
+            }
+
+            div[data-testid="stPlotlyChart"],
+            div[data-testid="stDataFrame"] {
+                background: #f7f1e7;
+            }
+
+            [data-testid="stFileUploaderDropzone"] {
+                background: #f6efe6;
+            }
+
+            [data-testid="stAlert"],
+            div[data-baseweb="notification"] {
+                background: #efe1c8;
+            }
+
+            .panel {
+                background: #f6efe6;
+            }
+
             @media (max-width: 900px) {
                 .hero-card {
-                    grid-template-columns: 1fr;
-                    padding: 1.45rem 1.1rem 1.25rem 1.1rem;
+                    padding: 1rem 0 0.9rem 0;
                 }
 
                 .hero-title {
