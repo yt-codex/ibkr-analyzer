@@ -52,6 +52,19 @@ streamlit run app.py
 
 The app will open in your browser.
 
+## Testing
+
+Run the helper and fixture-based regression suite with:
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+Notes:
+
+- `tests/fixtures/ibkr_sample_anonymized.csv` is the committed, sanitized fixture used by CI.
+- Other raw CSVs under `tests/fixtures/` are gitignored so personal exports stay local.
+
 ## Deploy online with Streamlit Community Cloud
 
 ### Prerequisites
