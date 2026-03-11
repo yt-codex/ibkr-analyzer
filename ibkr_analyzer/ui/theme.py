@@ -81,9 +81,9 @@ _CSS_PRESETS = {
         "panel_bg_strong": "#f1e8db",
         "panel_border": "rgba(96, 84, 72, 0.20)",
         "panel_border_strong": "rgba(58, 50, 43, 0.18)",
-        "text_main": "#1f2328",
-        "text_soft": "#59534c",
-        "text_muted": "#857c71",
+        "text_main": "#1b1814",
+        "text_soft": "#464039",
+        "text_muted": "#6d655b",
         "accent": "#0f6d75",
         "accent_2": "#1f4f82",
         "accent_3": "#b78447",
@@ -102,8 +102,8 @@ _CSS_PRESETS = {
         "hero_overlay_c": "transparent",
         "hero_eyebrow_border": "rgba(31, 35, 40, 0.18)",
         "hero_eyebrow_bg": "transparent",
-        "hero_eyebrow_text": "#5f584f",
-        "hero_sub": "#4f4b45",
+        "hero_eyebrow_text": "#514a43",
+        "hero_sub": "#3e3832",
         "hero_badge_border": "rgba(15, 109, 117, 0.26)",
         "hero_badge_bg": "#f6efe6",
         "hero_badge_text": "#244247",
@@ -114,7 +114,7 @@ _CSS_PRESETS = {
         "hero_badge_emphasis_text": "#6f5430",
         "section_bg_a": "transparent",
         "section_bg_b": "transparent",
-        "section_eyebrow": "#7a6e5f",
+        "section_eyebrow": "#62584c",
         "section_badge_bg": "#f6efe6",
         "surface_tint_a": "rgba(15, 109, 117, 0.18)",
         "surface_tint_b": "rgba(31, 79, 130, 0.14)",
@@ -134,10 +134,10 @@ _CSS_PRESETS = {
         "alert_bg_a": "#efe1c8",
         "alert_bg_b": "#efe1c8",
         "hint_border": "rgba(96, 84, 72, 0.26)",
-        "hint_icon": "#6d655b",
+        "hint_icon": "#514a43",
         "hint_value_bg": "#efe6d8",
         "hint_value_border": "rgba(96, 84, 72, 0.22)",
-        "hint_value_text": "#4d4741",
+        "hint_value_text": "#38332d",
     },
 }
 
@@ -221,6 +221,44 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 border-right: 1px solid rgba(96, 84, 72, 0.18);
             }
 
+            section[data-testid="stSidebar"] h1,
+            section[data-testid="stSidebar"] h2,
+            section[data-testid="stSidebar"] h3,
+            section[data-testid="stSidebar"] p,
+            section[data-testid="stSidebar"] label,
+            section[data-testid="stSidebar"] span,
+            section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
+            section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+                color: #2e2924 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stCheckbox"] label,
+            section[data-testid="stSidebar"] [data-testid="stToggle"] label,
+            section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] label,
+            section[data-testid="stSidebar"] [data-testid="stFileUploader"] label,
+            section[data-testid="stSidebar"] [data-testid="stExpander"] summary,
+            section[data-testid="stSidebar"] [data-testid="stExpander"] summary * {
+                color: #1f1b17 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] *,
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] small,
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] span,
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] div {
+                color: #49423a !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderFileName"],
+            section[data-testid="stSidebar"] [data-testid="stFileUploaderFile"] * {
+                color: #3e3832 !important;
+            }
+
+            section[data-testid="stSidebar"] .st-c6,
+            section[data-testid="stSidebar"] .st-c7,
+            section[data-testid="stSidebar"] .st-c8 {
+                color: #2e2924 !important;
+            }
+
             .summary-item {
                 background: #f6efe6;
                 border-top: 2px solid rgba(230, 161, 90, 0.45);
@@ -302,6 +340,36 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
             div[data-testid="stPlotlyChart"],
             div[data-testid="stDataFrame"] {
                 background: #f7f1e7;
+            }
+
+            .js-plotly-plot .plotly .g-gtitle text,
+            .js-plotly-plot .plotly .xtitle,
+            .js-plotly-plot .plotly .ytitle,
+            .js-plotly-plot .plotly .legend text,
+            .js-plotly-plot .plotly .xtick text,
+            .js-plotly-plot .plotly .ytick text,
+            .js-plotly-plot .plotly .annotation-text {
+                fill: #2e2924 !important;
+            }
+
+            .js-plotly-plot .modebar {
+                opacity: 1 !important;
+                background: rgba(247, 241, 231, 0.96) !important;
+                border: 1px solid rgba(96, 84, 72, 0.14);
+            }
+
+            .js-plotly-plot .modebar-btn svg path,
+            .js-plotly-plot .modebar-btn svg polygon,
+            .js-plotly-plot .modebar-btn svg rect,
+            .js-plotly-plot .modebar-btn svg circle {
+                fill: #5b544b !important;
+            }
+
+            .js-plotly-plot .modebar-btn:hover svg path,
+            .js-plotly-plot .modebar-btn:hover svg polygon,
+            .js-plotly-plot .modebar-btn:hover svg rect,
+            .js-plotly-plot .modebar-btn:hover svg circle {
+                fill: #1f1b17 !important;
             }
 
             [data-testid="stFileUploaderDropzone"] {

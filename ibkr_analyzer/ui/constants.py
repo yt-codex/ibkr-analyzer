@@ -46,9 +46,9 @@ _THEME_PRESETS = {
             "#d8c2a8",
         ],
         "chart": {
-            "font_color": "#1f2328",
+            "font_color": "#1b1814",
             "plot_bg": "#f7f1e7",
-            "grid_color": "rgba(65, 59, 52, 0.12)",
+            "grid_color": "rgba(65, 59, 52, 0.16)",
             "marker_line": "rgba(232, 222, 208, 0.95)",
             "nav_fill": "rgba(230, 161, 90, 0.22)",
             "drawdown_fill": "rgba(192, 90, 61, 0.18)",
