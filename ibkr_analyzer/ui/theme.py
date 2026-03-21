@@ -402,12 +402,6 @@ def inject_custom_css(theme_name: str = "slate_mint") -> None:
                 color: #3e3832 !important;
             }
 
-            section[data-testid="stSidebar"] .st-c6,
-            section[data-testid="stSidebar"] .st-c7,
-            section[data-testid="stSidebar"] .st-c8 {
-                color: #2e2924 !important;
-            }
-
             .summary-item {
                 background: #f6efe6;
                 border-top: 2px solid rgba(230, 161, 90, 0.45);

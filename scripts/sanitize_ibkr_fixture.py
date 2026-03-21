@@ -8,6 +8,10 @@ from pathlib import Path
 
 ACCOUNT_PATTERN = re.compile(r"^U\d+$")
 ACCOUNT_RETURN_PATTERN = re.compile(r"^(U\d+)(Return)$")
+SUMMARY_ROW_PATTERN = re.compile(
+    r"(?:(?:grand\s+)?totals?|sub\s*total)(?::)?(?:\s|$)",
+    re.IGNORECASE,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -35,6 +39,10 @@ def sanitize_header_cell(cell: str) -> str:
     return cell
 
 
+def is_summary_row_value(value: str) -> bool:
+    return bool(SUMMARY_ROW_PATTERN.match(value.strip()))
+
+
 def anonymize_value(
     header: str,
     value: str,
@@ -53,13 +61,11 @@ def anonymize_value(
     if header == "Alias":
         return ""
     if header == "Symbol":
-        lowered = text.lower()
-        if lowered == "total":
-            return "Total"
+        if is_summary_row_value(text):
+            return value
         return symbol_map.setdefault(text, f"SYM{len(symbol_map) + 1:03d}")
     if header == "Description":
-        lowered = text.lower()
-        if lowered.startswith("total"):
+        if is_summary_row_value(text):
             return value
         return description_map.setdefault(text, f"Description {len(description_map) + 1:03d}")
     if header == "Account" and text:
@@ -116,7 +122,7 @@ def sanitize_fixture(
             headers = headers_for_table.get((section, table_index), [])
             payload = row[2:]
             include_row = data_counts[(section, table_index)] < max_data_rows_per_table or any(
-                "total" in str(cell).strip().lower() for cell in payload
+                is_summary_row_value(str(cell)) for cell in payload
             )
             data_counts[(section, table_index)] += 1
             if not include_row:

@@ -19,6 +19,7 @@ class ParsedIBKRReport:
 
 NULL_MARKERS = {"", "-", "--", "N/A", "NA", "null", "None"}
 TOTAL_ROW_PATTERN = re.compile(r"(?:grand\s+)?totals?|sub\s*total", re.IGNORECASE)
+BENCHMARK_COLUMN_PATTERN = re.compile(r"BM(\d+)", re.IGNORECASE)
 
 
 def make_unique_headers(headers: list[str]) -> list[str]:
@@ -291,6 +292,70 @@ def value_or_zero(value: float) -> float:
     return 0.0 if pd.isna(value) else float(value)
 
 
+def normalize_cashflow_amount(cashflow_type: object, amount: float) -> float:
+    if pd.isna(amount):
+        return np.nan
+
+    normalized_type = re.sub(r"[\s_-]+", " ", str(cashflow_type or "").strip().lower())
+    deposit_markers = ("deposit", "contribution", "transfer in", "wire in", "credit")
+    withdrawal_markers = (
+        "withdraw",
+        "withdrawal",
+        "distribution",
+        "transfer out",
+        "wire out",
+        "debit",
+    )
+
+    if any(marker in normalized_type for marker in deposit_markers):
+        return abs(float(amount))
+    if any(marker in normalized_type for marker in withdrawal_markers):
+        return -abs(float(amount))
+    return float(amount)
+
+
+def partial_year_label_year(
+    report_end: pd.Timestamp,
+    available_dates: pd.Series | list[pd.Timestamp] | None = None,
+) -> int | None:
+    if pd.notna(report_end):
+        return int(report_end.year) if not (
+            report_end.month == 12 and report_end.day == 31
+        ) else None
+
+    if available_dates is None:
+        return None
+
+    parsed_dates = pd.Series(available_dates).dropna()
+    if parsed_dates.empty:
+        return None
+
+    latest_date = pd.to_datetime(parsed_dates, errors="coerce").dropna().max()
+    if pd.isna(latest_date):
+        return None
+    return int(latest_date.year) if latest_date.month < 12 else None
+
+
+def iter_available_benchmark_pairs(
+    columns: pd.Index | list[str],
+) -> list[tuple[str, str]]:
+    ordered_pairs: list[tuple[int, str, str]] = []
+    column_names = [str(column).strip() for column in columns]
+    column_set = set(column_names)
+
+    for column_name in column_names:
+        match = BENCHMARK_COLUMN_PATTERN.fullmatch(column_name)
+        if not match:
+            continue
+
+        return_column = f"{column_name}Return"
+        if return_column in column_set:
+            ordered_pairs.append((int(match.group(1)), column_name, return_column))
+
+    ordered_pairs.sort(key=lambda item: item[0])
+    return [(benchmark_column, return_column) for _, benchmark_column, return_column in ordered_pairs]
+
+
 def find_projected_remaining_income_column(columns: pd.Index | list[str]) -> str | None:
     candidates: list[tuple[int, str]] = []
     for column in columns:
@@ -387,19 +452,15 @@ def sanitize_total_rows(
 
 
 def build_benchmark_long(data_frame: pd.DataFrame) -> pd.DataFrame:
-    required = {"Date", "BM1", "BM1Return", "BM2", "BM2Return", "BM3", "BM3Return"}
-    if data_frame.empty or not required.issubset(set(data_frame.columns)):
+    if data_frame.empty or "Date" not in data_frame.columns:
         return pd.DataFrame()
 
     working = data_frame.copy()
     working["DateParsed"] = working["Date"].map(parse_report_date)
 
     series_pairs: list[tuple[str, str]] = []
-    for benchmark_col, return_col in (
-        ("BM1", "BM1Return"),
-        ("BM2", "BM2Return"),
-        ("BM3", "BM3Return"),
-    ):
+    benchmark_pairs = iter_available_benchmark_pairs(working.columns)
+    for benchmark_col, return_col in benchmark_pairs:
         benchmark_name_series = (
             working[benchmark_col].replace("", np.nan).dropna()
             if benchmark_col in working.columns
@@ -416,13 +477,11 @@ def build_benchmark_long(data_frame: pd.DataFrame) -> pd.DataFrame:
     known_columns = {
         "Date",
         "DateParsed",
-        "BM1",
-        "BM1Return",
-        "BM2",
-        "BM2Return",
-        "BM3",
-        "BM3Return",
     }
+    for benchmark_col, return_col in benchmark_pairs:
+        known_columns.add(benchmark_col)
+        known_columns.add(return_col)
+
     extra_columns = [column for column in working.columns if column not in known_columns]
     account_return_column = ""
     account_name = ""

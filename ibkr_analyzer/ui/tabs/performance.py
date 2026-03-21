@@ -11,6 +11,8 @@ from ibkr_analyzer.report_utils import (
     annualize_return,
     build_benchmark_long,
     get_table,
+    iter_available_benchmark_pairs,
+    partial_year_label_year,
     period_years,
     return_method_label_and_tooltip,
     sanitize_total_rows,
@@ -21,19 +23,22 @@ from ibkr_analyzer.ui.constants import CHART_COLORS, get_chart_theme, get_plotly
 
 
 def render_performance_tab(
-    report: ParsedIBKRReport, account_hint: str, performance_measure: str
+    report: ParsedIBKRReport,
+    account_hint: str,
+    performance_measure: str,
+    report_end: pd.Timestamp = pd.NaT,
 ) -> None:
     chart_theme = get_chart_theme()
     plotly_template = get_plotly_template()
     time_table = get_table(
         report,
         "Time Period Benchmark Comparison",
-        required_columns=["Date", "BM1", "BM1Return", "BM2", "BM2Return", "BM3", "BM3Return"],
+        required_columns=["Date"],
     )
     cumulative_table = get_table(
         report,
         "Cumulative Benchmark Comparison",
-        required_columns=["Date", "BM1", "BM1Return", "BM2", "BM2Return", "BM3", "BM3Return"],
+        required_columns=["Date"],
     )
 
     periodic_returns_long = build_benchmark_long(time_table)
@@ -48,11 +53,10 @@ def render_performance_tab(
     )
 
     benchmark_names = []
-    for benchmark_col in ("BM1", "BM2", "BM3"):
-        if benchmark_col in time_table.columns:
-            values = time_table[benchmark_col].replace("", np.nan).dropna()
-            if not values.empty:
-                benchmark_names.append(str(values.iloc[0]))
+    for benchmark_col, _ in iter_available_benchmark_pairs(time_table.columns):
+        values = time_table[benchmark_col].replace("", np.nan).dropna()
+        if not values.empty:
+            benchmark_names.append(str(values.iloc[0]))
 
     portfolio_series_name = ""
     if not periodic_returns_long.empty:
@@ -86,16 +90,20 @@ def render_performance_tab(
             )
             .sort_values(["Year", "Series"])
         )
-        current_year = pd.Timestamp.today().year
         annual_returns_long["YearLabel"] = annual_returns_long["Year"].astype(int).astype(str)
-        annual_returns_long.loc[
-            annual_returns_long["Year"] == current_year, "YearLabel"
-        ] = (
-            annual_returns_long.loc[
-                annual_returns_long["Year"] == current_year, "YearLabel"
-            ]
-            + " YTD"
+        partial_year = partial_year_label_year(
+            report_end,
+            available_dates=periodic_returns_long["Date"],
         )
+        if partial_year is not None:
+            annual_returns_long.loc[
+                annual_returns_long["Year"] == partial_year, "YearLabel"
+            ] = (
+                annual_returns_long.loc[
+                    annual_returns_long["Year"] == partial_year, "YearLabel"
+                ]
+                + " YTD"
+            )
 
     performance_chart_col, drawdown_chart_col = st.columns((1.3, 1.0))
 

@@ -9,6 +9,7 @@ from ibkr_analyzer.report_utils import (
     format_money,
     format_pct,
     get_table,
+    normalize_cashflow_amount,
     parse_number,
     parse_report_date,
     remaining_income_metric_label,
@@ -39,7 +40,11 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
     if not cashflows.empty:
         cashflows["DateParsed"] = cashflows["Date"].map(parse_report_date)
         cashflows["Amount"] = to_numeric(cashflows["Amount"])
-        cashflows = cashflows.dropna(subset=["DateParsed", "Amount"])
+        cashflows["NetAmount"] = cashflows.apply(
+            lambda row: normalize_cashflow_amount(row.get("Type"), row.get("Amount")),
+            axis=1,
+        )
+        cashflows = cashflows.dropna(subset=["DateParsed", "NetAmount"])
 
     if not dividends.empty:
         dividends["DateParsed"] = dividends["PayDate"].map(parse_report_date)
@@ -57,10 +62,14 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
         interest = interest.dropna(subset=["DateParsed", "Amount"])
 
     deposits_total = (
-        cashflows.loc[cashflows["Amount"] > 0, "Amount"].sum() if not cashflows.empty else np.nan
+        cashflows.loc[cashflows["NetAmount"] > 0, "NetAmount"].sum()
+        if not cashflows.empty
+        else np.nan
     )
     withdrawals_total = (
-        cashflows.loc[cashflows["Amount"] < 0, "Amount"].sum() if not cashflows.empty else np.nan
+        cashflows.loc[cashflows["NetAmount"] < 0, "NetAmount"].sum()
+        if not cashflows.empty
+        else np.nan
     )
     dividend_total = dividends["Amount"].sum() if not dividends.empty else np.nan
     interest_total = interest["Amount"].sum() if not interest.empty else np.nan
@@ -87,8 +96,9 @@ def render_cashflow_income_tab(report: ParsedIBKRReport, base_currency: str) -> 
         else:
             monthly_cashflows = (
                 cashflows.assign(Month=cashflows["DateParsed"].dt.to_period("M").dt.to_timestamp())
-                .groupby("Month", as_index=False)["Amount"]
+                .groupby("Month", as_index=False)["NetAmount"]
                 .sum()
+                .rename(columns={"NetAmount": "Amount"})
             )
             cf_fig = px.bar(
                 monthly_cashflows,

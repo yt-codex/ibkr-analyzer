@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -20,30 +22,12 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
     risk_absolute = get_table(
         report,
         "Risk Measures Benchmark Comparison",
-        required_columns=[
-            "Risk Measure",
-            "BM1",
-            "BM1 Value",
-            "BM2",
-            "BM2 Value",
-            "BM3",
-            "BM3 Value",
-            "Account",
-            "Account Value",
-        ],
+        required_columns=["Risk Measure"],
     )
     risk_relative = get_table(
         report,
         "Risk Measures Benchmark Comparison",
-        required_columns=[
-            "Risk Measure Relative to Benchmark",
-            "BM1",
-            "BM1 Value",
-            "BM2",
-            "BM2 Value",
-            "BM3",
-            "BM3 Value",
-        ],
+        required_columns=["Risk Measure Relative to Benchmark"],
     )
 
     if not risk_absolute.empty:
@@ -55,10 +39,28 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
             .str.strip()
         )
 
+        available_series_pairs: list[tuple[int, str, str]] = []
+        for column_name in risk_absolute.columns:
+            match = re.fullmatch(r"BM(\d+)", str(column_name).strip())
+            if not match:
+                continue
+
+            value_column = f"{column_name} Value"
+            if value_column in risk_absolute.columns:
+                available_series_pairs.append(
+                    (int(match.group(1)), str(column_name), value_column)
+                )
+
+        if {"Account", "Account Value"}.issubset(risk_absolute.columns):
+            available_series_pairs.append((999, "Account", "Account Value"))
+
+        available_series_pairs.sort(key=lambda item: item[0])
         benchmark_names = {}
-        for key in ("BM1", "BM2", "BM3", "Account"):
-            values = risk_absolute[key].replace("", np.nan).dropna()
-            benchmark_names[key] = str(values.iloc[0]) if not values.empty else key
+        for _, label_column, _ in available_series_pairs:
+            values = risk_absolute[label_column].replace("", np.nan).dropna()
+            benchmark_names[label_column] = (
+                str(values.iloc[0]) if not values.empty else label_column
+            )
 
         metric_subset = [
             "Sharpe Ratio",
@@ -72,12 +74,7 @@ def render_risk_esg_tab(report: ParsedIBKRReport) -> None:
 
         melted_rows: list[dict[str, object]] = []
         for _, row in chart_rows.iterrows():
-            for benchmark, value_column in (
-                ("BM1", "BM1 Value"),
-                ("BM2", "BM2 Value"),
-                ("BM3", "BM3 Value"),
-                ("Account", "Account Value"),
-            ):
+            for _, benchmark, value_column in available_series_pairs:
                 value = parse_number(row.get(value_column))
                 if pd.notna(value):
                     melted_rows.append(

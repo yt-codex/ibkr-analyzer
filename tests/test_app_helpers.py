@@ -73,6 +73,41 @@ class AppHelperTests(unittest.TestCase):
             12.5,
         )
 
+    def test_build_benchmark_long_accepts_partial_benchmark_set(self) -> None:
+        benchmark_table = pd.DataFrame(
+            {
+                "Date": ["Jan-26", "Feb-26"],
+                "BM1": ["SPXTR", "SPXTR"],
+                "BM1Return": [1.2, 2.3],
+                "Account": ["U0000000", "U0000000"],
+                "AccountReturn": [0.8, 1.4],
+            }
+        )
+
+        normalized = report_utils.build_benchmark_long(benchmark_table)
+
+        self.assertEqual(sorted(normalized["Series"].unique().tolist()), ["SPXTR", "U0000000"])
+        self.assertEqual(len(normalized), 4)
+
+    def test_partial_year_label_year_uses_report_end_instead_of_wall_clock(self) -> None:
+        self.assertEqual(
+            report_utils.partial_year_label_year(pd.Timestamp("2026-02-25")),
+            2026,
+        )
+        self.assertIsNone(
+            report_utils.partial_year_label_year(pd.Timestamp("2026-12-31"))
+        )
+
+    def test_normalize_cashflow_amount_uses_transaction_type_hint(self) -> None:
+        self.assertEqual(
+            report_utils.normalize_cashflow_amount("WITHDRAWAL", 150.0),
+            -150.0,
+        )
+        self.assertEqual(
+            report_utils.normalize_cashflow_amount("DEPOSIT", -250.0),
+            250.0,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

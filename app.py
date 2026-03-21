@@ -186,7 +186,7 @@ def streamlit_app() -> None:
         )
 
     with performance_tab:
-        render_performance_tab(report, account_id, performance_measure)
+        render_performance_tab(report, account_id, performance_measure, period_end)
 
     with holdings_tab:
         render_holdings_tab(report, base_currency)
